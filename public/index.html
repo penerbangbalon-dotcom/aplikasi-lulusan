@@ -2,7 +2,7 @@
 <title>Data Lulusan dan Kendali Blanko</title>
 <style>
 :root{--ink:#14213d;--bg:#eef1f4;--line:#cfd6de;--ok:#0f766e;--warn:#b45309;--bad:#b91c1c;--mut:#5b6677;font-family:"Segoe UI",system-ui,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}
+[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}
 header{background:var(--ink);color:#fff;padding:12px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 header h1{font-size:17px;margin:0 auto 0 0}nav button{background:none;color:#cfd8e8;border:0;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:2px solid transparent}
 nav button.on{color:#fff;border-color:#5eead4}main{padding:16px;max-width:1150px;margin:auto}
@@ -18,6 +18,27 @@ dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog s
 .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}#login{max-width:320px;margin:15vh auto;padding:20px;background:#fff;border-radius:10px;display:grid;gap:10px}
 .mut{color:var(--mut)}:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
 #pv{max-width:100%;overflow-x:auto;font-family:"Times New Roman",serif;color:#000}#pv table{border-collapse:collapse;width:100%;margin:10px 0}#pv th,#pv td{border:1px solid #333;padding:3px 6px;font-size:13px;white-space:normal;vertical-align:top}#pv .nb td{border:0}
+
+#my{max-width:480px;margin:0 auto;min-height:100vh;background:#f3f5fb;padding-bottom:84px;position:relative}
+.myh{background:linear-gradient(160deg,#1e40af,#2563eb 55%,#3b82f6);color:#fff;padding:18px 20px 70px;border-radius:0 0 26px 26px}
+.mytop{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin-bottom:18px}
+.mytop button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;padding:5px 14px;font-size:13px}
+.who{display:flex;gap:14px;align-items:center}.who h2{margin:2px 0;font-size:19px;line-height:1.25}.who small{opacity:.85}
+.av{width:58px;height:58px;border-radius:50%;background:#fff;color:#1e40af;display:grid;place-items:center;font-weight:700;font-size:21px;flex:none}
+.mc{background:#fff;border-radius:16px;margin:0 16px 14px;padding:16px;box-shadow:0 2px 10px rgba(30,64,175,.08)}
+.mc.up{margin-top:-48px}.mc h3{margin:0 0 12px;font-size:14px;color:#1e40af}
+.rw{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #eef1f6;font-size:14px}.rw:last-child{border:0}
+.rw span{color:var(--mut)}.rw b{text-align:right;font-weight:600;word-break:break-word}
+.stp{display:flex;justify-content:space-between;position:relative;margin:6px 0 4px}
+.stp:before{content:"";position:absolute;left:12%;right:12%;top:15px;height:3px;background:#e2e8f0}
+.sp{flex:1;text-align:center;font-size:12px;color:var(--mut);position:relative}
+.sp i{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#e2e8f0;margin:0 auto 6px;font-style:normal;font-weight:700;color:#64748b}
+.sp.on{color:#1e40af;font-weight:600}.sp.on i{background:#2563eb;color:#fff}
+.big{font-size:20px;font-weight:700;letter-spacing:.5px;word-break:break-all}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini div{background:#f3f5fb;border-radius:12px;padding:12px}.mini small{color:var(--mut);display:block;margin-bottom:3px}.mini b{font-size:15px}
+.bn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;border-top:1px solid #e2e8f0;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+.bn button{flex:1;border:0;background:none;display:grid;gap:2px;justify-items:center;font-size:12px;color:#64748b;padding:6px}
+.bn button.on{color:#2563eb;font-weight:600}.bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style></head><body>
 <div id="login"><h2 style="margin:0">Masuk</h2>
 <div class="bar" style="margin:0"><button id="pa" class="p" onclick="peran('admin')">Admin</button><button id="ps" onclick="peran('siswa')">Siswa</button></div>
@@ -26,10 +47,10 @@ dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog s
 <input id="pw" type="password" placeholder="Kata sandi" autocomplete="current-password">
 <small id="hint" class="mut" hidden>Kata sandi siswa adalah tanggal lahir, contoh 17082008.</small>
 <button class="p" onclick="masuk()">Masuk</button></div>
+<div id="my" hidden></div>
 <div id="app" hidden>
 <header><h1>Data Lulusan dan Kendali Blanko</h1><nav><button id="n1" class="on" onclick="tab(1)">Lulusan</button><button id="n2" onclick="tab(2)">Blanko ijazah</button><button id="n3" onclick="tab(3)">Laporan</button></nav><button class="s" onclick="keluar()">Keluar</button></header>
 <main>
-<section id="ts" hidden><div class="w" style="padding:20px;max-width:560px"><h2 id="sn" style="margin-top:0"></h2><div id="sd"></div></div></section>
 <section id="t1"><div class="bar"><input id="q" placeholder="Cari nama, NISN, NIK, no. ijazah, no. seri blanko" style="flex:1;min-width:220px" oninput="tunda()">
 <input id="th" type="number" placeholder="Tahun lulus" style="width:120px" oninput="tunda()"><select id="st" onchange="cari()"><option value="">Semua status</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select>
 <button class="p" onclick="form()">Tambah lulusan</button><button onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"></div>
@@ -59,10 +80,24 @@ function peran(p){P=p;$('#ln').hidden=$('#hint').hidden=p!='siswa';$('#pw').plac
 fetch('/api/login').then(r=>r.json()).then(a=>{$('#lth').innerHTML+=a.map(y=>`<option>${y}</option>`).join('')}).catch(()=>{});
 async function masuk(){const th=$('#lth').value;if(P=='siswa'&&(!th||!$('#ln').value.trim()))return alert('Pilih tahun lulusan dan isi nama lengkap');
 const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({peran:P,password:$('#pw').value,nama:$('#ln').value,tahun:th})}),d=await r.json();if(!r.ok)return alert(d.error);T=localStorage.t=d.token;R=localStorage.r=d.role;localStorage.th=th;mulai()}
-async function saya(){const r=await api('saya');$('#sn').textContent=r.nama||'';const L=[['NISN',r.nisn],['Tempat, tanggal lahir',[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', ')],['Nama orang tua',r.ortu],['Jenjang',[r.jenjang,r.jurusan].filter(Boolean).join(' ')],['Tahun lulus',r.tahun_lulus],['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Status ijazah',r.status]];
-$('#sd').innerHTML='<table>'+L.map(x=>`<tr><th>${x[0]}</th><td>${E(x[1])||'-'}</td></tr>`).join('')+'</table>'}
+let S={},TB='b';
+const ini=n=>String(n||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+const rw=L=>L.map(x=>`<div class="rw"><span>${x[0]}</span><b>${E(x[1])||'-'}</b></div>`).join('');
+const IK={b:'<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',d:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',i:'<svg viewBox="0 0 24 24"><path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg>'};
+async function saya(){S=await api('saya');TB='b';sv()}
+function sv(){const r=S,n={lulus:1,'ijazah tercetak':2,'sudah diambil':3,duplikat:3}[r.status]||1;
+const ttl=[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', '),jj=[r.jenjang,r.jurusan].filter(Boolean).join(' ');
+const st=['Lulus','Ijazah tercetak','Sudah diambil'].map((t,k)=>`<div class="sp ${k<n?'on':''}"><i>${k<n?'✓':k+1}</i>${t}</div>`).join('');
+let b='';
+if(TB=='b')b=`<div class="mc up"><h3>Status Ijazah</h3><div class="stp">${st}</div></div>
+<div class="mc"><h3>Nomor Ijazah</h3><div class="big">${E(r.no_ijazah)||'Belum tersedia'}</div></div>
+<div class="mc"><div class="mini"><div><small>Jenjang</small><b>${E(jj)||'-'}</b></div><div><small>Tahun lulus</small><b>${E(r.tahun_lulus)||'-'}</b></div></div></div>`;
+else if(TB=='d')b=`<div class="mc up"><h3>Data Diri</h3>${rw([['Nama',r.nama],['NISN',r.nisn],['Tempat, tanggal lahir',ttl],['Nama orang tua',r.ortu]])}</div>`;
+else b=`<div class="mc up"><h3>Data Kelulusan dan Ijazah</h3>${rw([['Jenjang',jj],['Tahun lulus',r.tahun_lulus],['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima],['Status ijazah',r.status]])}</div>`;
+const nv=[['b','Beranda'],['d','Data Diri'],['i','Ijazah']].map(([k,t])=>`<button class="${TB==k?'on':''}" onclick="TB='${k}';sv();scrollTo(0,0)">${IK[k]}${t}</button>`).join('');
+$('#my').innerHTML=`<div class="myh"><div class="mytop"><span>Data Lulusan</span><button onclick="keluar()">Keluar</button></div><div class="who"><div class="av">${E(ini(r.nama))}</div><div><small>Selamat datang,</small><h2>${E(r.nama)}</h2><small>NISN ${E(r.nisn)||'-'}</small></div></div></div>${b}<nav class="bn">${nv}</nav>`}
 function keluar(){localStorage.removeItem('t');localStorage.removeItem('r');T=null;location.reload()}
-function mulai(){if(!T)return;$('#login').hidden=true;$('#app').hidden=false;if(R=='siswa'){document.querySelector('nav').hidden=true;$('#t1').hidden=true;$('#ts').hidden=false;return saya()}
+function mulai(){if(!T)return;$('#login').hidden=true;$('#app').hidden=false;if(R=='siswa'){$('#app').hidden=true;$('#my').hidden=false;return saya()}
 if(R!='admin')document.querySelectorAll('.adm').forEach(e=>e.hidden=true);const th=localStorage.th||'';$('#th').value=th;$('#lt').value=th;cari()}
 function tab(n){[1,2,3].forEach(i=>{$('#t'+i).hidden=i!=n;$('#n'+i).classList.toggle('on',i==n)});n==1?cari():n==2?blanko():0}
 function tunda(){clearTimeout(tm);tm=setTimeout(cari,300)}
