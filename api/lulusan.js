@@ -5,10 +5,10 @@ module.exports = async (req, res) => {
   const role = auth(req, res); if (!role) return;
   try {
     if (req.method === 'GET') {
-      const { q = '', tahun = '', status = '', jenjang = '' } = req.query, like = '%' + q + '%';
+      const { q = '', tahun = '', status = '', jenjang = '', jurusan = '', blanko = '' } = req.query, like = '%' + q + '%';
       const r = await pool.query(`select l.*, b.no_seri from lulusan l left join blanko b on b.id=l.blanko_id
-        where ($1='' or l.nama ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2)
-        and ($3='' or l.tahun_lulus::text=$3) and ($4='' or l.status=$4) and ($5='' or l.jenjang=$5) order by l.tahun_lulus desc, l.nama limit ${req.query.semua ? 5000 : 300}`, [q, like, tahun, status, jenjang]);
+        where ($1='' or l.nama ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2 or l.tempat_lahir ilike $2 or l.ortu ilike $2 or l.penerima ilike $2)
+        and ($3='' or l.tahun_lulus::text=$3) and ($4='' or l.status=$4) and ($5='' or l.jenjang=$5) and ($6='' or l.jurusan=$6) and ($7='' or ($7='ada' and l.blanko_id is not null) or ($7='belum' and l.blanko_id is null)) order by l.tahun_lulus desc, l.nama limit ${req.query.semua ? 5000 : 300}`, [q, like, tahun, status, jenjang, jurusan, blanko]);
       return res.json(r.rows);
     }
     if (req.method === 'POST') {
