@@ -333,11 +333,11 @@ const stp=`<div class="sg"><div class="stp">${['Lulus','Ijazah tercetak','Sudah 
 pf=`<div class="pf"><div class="pav">${E(ini(r.nama))}</div><div><div class="pn">${E(r.nama)}</div><div class="pa">NISN ${E(r.nisn)||'-'}</div></div></div>`,
 bt=(t,k)=>`<button class="bt" onclick="TB='${k}';sv()"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>${t}</button>`,
 dd=[['Nama lengkap',r.nama],['NIS',r.nis],['NISN',r.nisn],['Nomor Peserta UPK',r.peserta_upk],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu],['Jenjang',r.jenjang],['Jurusan',r.jurusan],['Tahun lulus',r.tahun_lulus]],
-ij=[['Nomor ijazah',r.no_ijazah||'Belum tersedia'],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima],['Status ijazah',r.status]];
+ij=[['Nomor seri ijazah (no. blanko ijazah)',r.no_ijazah||'Belum tersedia'],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima],['Status ijazah',r.status]];
 const h=new Date().getHours(),w=h<11?'pagi':h<15?'siang':h<18?'sore':'malam';let b='';
 if(TB=='b')b=`<div class="hi"><h2>Halo, <b>${E(r.nama)}</b></h2><p>Selamat ${w}! Berikut data kelulusan dan status ijazah Anda.</p><div class="hb"><button class="b0" onclick="TB='d';sv()">Data Diri</button><button class="b3" onclick="TB='i';sv()">Ijazah</button><button class="b1" onclick="tampil(S)">Cetak Data</button></div>${document.querySelector('#t0 .hiart').outerHTML}</div>
 <div class="dg"><div class="dc y"><h3>Data Siswa</h3>${pf}${kvh([['Jenjang',jj],['Tahun lulus',r.tahun_lulus],['Tempat, tanggal lahir',ttl],['Status ijazah',r.status]])}${bt('Lihat Detail','d')}</div>
-<div class="dc"><h3>Perkembangan Ijazah</h3><div class="pg">${gauge(pc,'Progres ijazah',n+' dari 3 tahap')}${kvh([['Nomor ijazah',r.no_ijazah||'Belum tersedia'],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)]])}</div>${stp}${bt('Lihat Ijazah','i')}</div></div>`;
+<div class="dc"><h3>Perkembangan Ijazah</h3><div class="pg">${gauge(pc,'Progres ijazah',n+' dari 3 tahap')}${kvh([['Nomor seri ijazah (no. blanko ijazah)',r.no_ijazah||'Belum tersedia'],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)]])}</div>${stp}${bt('Lihat Ijazah','i')}</div></div>`;
 else if(TB=='d')b=`<div class="dc y"><h3>Data Diri</h3>${pf}${kvh(dd,'k3')}</div>`;
 else b=`<div class="dc y"><h3>Data Kelulusan dan Ijazah</h3>${stp}${kvh(ij,'k3')}</div>`;
 $('#ts').innerHTML=b;$('#app').classList.toggle('home',TB=='b');const t={b:'Beranda',d:'Data Diri',i:'Ijazah'}[TB];$('#ptl').hidden=TB=='b';$('#ptl').textContent=$('#mt').textContent=t;
@@ -410,13 +410,13 @@ function lihat(i){CI=i;tampil(D[i])}
 function tampil(r){const sis=R=='siswa';CUR=r;
 $('#dtl').innerHTML=`<div class="dw"><div class="ub"><button onclick="tutup()">← Kembali</button><span>${sis?'Data Lulusan':'Detail Lulusan'}</span><div class="ubr">${menuCetak('cetak')}${sis?'<button class="kel" onclick="keluar()">Keluar</button>':''}</div></div>
 <div class="u2"><div><div class="un">${E(r.nisn)||'-'}</div><h2 class="unm">${E(r.nama)}</h2>
-${fd('Jenjang Pendidikan',r.jenjang)}${fd('Jurusan',r.jurusan)}${fd('Tahun Lulus',r.tahun_lulus)}${fd('Status Ijazah',r.status)}${fd('Nomor Seri Blanko',r.no_seri)}${fd('Data Dicatat',tgs(r.dibuat))}
+${fd('Jenjang Pendidikan',r.jenjang)}${fd('Jurusan',r.jurusan)}${fd('Tahun Lulus',r.tahun_lulus)}${fd('Status Ijazah',r.status)}${sis?'':fd('Nomor Seri Blanko',r.no_seri)}${fd('Data Dicatat',tgs(r.dibuat))}
 ${sis?'':(can('lulusan.ubah')?`<button class="ubt" onclick="tutup();formL(${CI})">${PN} Edit Data Lulusan</button>`:'')+(r.no_seri?(can('blanko.lihat')?`<button class="ubt" onclick="tabU(2)">${PN} Riwayat Blanko</button>`:''):(can('blanko.pakai')?`<button class="ubt" onclick="tutup();pakai(${r.id})">${PN} Pakai Blanko</button>`:''))}</div>
 <div><div class="utb" id="utb"></div><div id="utc"></div></div></div></div>`;
 tabU(0);$('#dtl').hidden=false;$('#dtl').scrollTop=0;document.body.style.overflow='hidden'}
 function tabU(k){const r=CUR,sis=R=='siswa';$('#utb').innerHTML=TU.map((t,x)=>`<button class="${x==k?'on':''}" onclick="tabU(${x})">${t}</button>`).join('');let h='';
 if(k==0)h=`<h3 class="uh">1. Data Diri Lulusan</h3>${fd('Nomor Induk Siswa (NIS)',r.nis)}${fd('Nomor Induk Siswa Nasional (NISN)',r.nisn)}${fd('Nomor Peserta UPK',r.peserta_upk)}${fd('Nomor Induk Kependudukan (NIK)',r.nik)}${fd('Tempat Lahir',(r.tempat_lahir||'').toUpperCase())}${fd('Tanggal Lahir',tgs(r.tgl_lahir))}${fd('Nama Orang Tua',r.ortu)}`;
-else if(k==1)h=`<h3 class="uh">1. Data Ijazah</h3>${fd('Nomor Ijazah',r.no_ijazah)}${fd('Nomor Seri Blanko',r.no_seri)}<h3 class="uh">2. Penyerahan Ijazah</h3><div class="f2">${fd('Tanggal Terbit',tgs(r.tgl_terbit))}${fd('Tanggal Diambil',tgs(r.tgl_diambil))}</div>${fd('Nama Penerima',r.penerima)}`;
+else if(k==1)h=`<h3 class="uh">1. Data Ijazah</h3>${sis?fd('Nomor Seri Ijazah (No. Blanko Ijazah)',r.no_ijazah):fd('Nomor Ijazah',r.no_ijazah)+fd('Nomor Seri Blanko',r.no_seri)}<h3 class="uh">2. Penyerahan Ijazah</h3><div class="f2">${fd('Tanggal Terbit',tgs(r.tgl_terbit))}${fd('Tanggal Diambil',tgs(r.tgl_diambil))}</div>${fd('Nama Penerima',r.penerima)}`;
 else{const lg=x=>`<div class="lg"><b>${E(x.aksi)}</b> ${E(x.detail)||''}<br><small>${new Date(x.waktu).toLocaleString('id-ID')}${x.oleh?' · '+E(x.oleh):''}</small></div>`;
 const ada=sis?(r.riwayat||[]).length:r.blanko_id;
 h=`<h3 class="uh">1. Catatan</h3>${fd('Catatan',r.catatan)}<h3 class="uh">2. Riwayat Blanko</h3><div id="rwy">${sis?((r.riwayat||[]).map(lg).join('')||'<div class="lg">Belum ada blanko yang dipakai.</div>'):r.blanko_id?(can('blanko.lihat')?'Memuat...':'<div class="lg">Peran Anda tidak punya hak akses melihat riwayat blanko.</div>'):'<div class="lg">Belum ada blanko yang dipakai.</div>'}</div>`;
@@ -507,7 +507,7 @@ function lembar(r){const row=(a,b)=>`<tr><td style="width:36%;font-weight:bold">
 sec=(t,L)=>`<p style="margin:14px 0 4px"><b>${t}</b></p><table>${L.map(x=>row(x[0],x[1])).join('')}</table>`;
 return kop2()+jd('<u>DATA LULUSAN</u>')+sec('A. Data Diri',[['Nama lengkap',(r.nama||'').toUpperCase()],['NIS',r.nis],['NISN',r.nisn],['Peserta UPK',r.peserta_upk],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])
 +sec('B. Data Kelulusan',[['Jenjang pendidikan',r.jenjang],['Jurusan',r.jurusan],['Tahun lulus',r.tahun_lulus],['Status ijazah',r.status]])
-+sec('C. Data Ijazah',[['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima]])
++sec('C. Data Ijazah',(R=='siswa'?[['Nomor seri ijazah (no. blanko ijazah)',r.no_ijazah]]:[['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri]]).concat([['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima]]))
 +`<table class="nb" border="0" width="100%" style="margin-top:28px"><tr><td width="55%">&nbsp;</td><td style="text-align:center">${E(I.kota||'................')}, ${tg(new Date())}<br>Kepala ${E(I.nama||'')}<br><br><br><br><b><u>${E(I.kepala||'................')}</u></b></td></tr></table><p style="text-align:right;margin-top:16px;font-size:10pt">Dicetak pada ${tg(new Date())}</p>`}
 function cetak(fmt){if(!CUR)return;keluarkan(fmt,lembar(CUR),'portrait','Data Lulusan - '+(CUR.nama||''))}
 
