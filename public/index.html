@@ -14,6 +14,7 @@ th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #e6eaef;white-spa
 .stok{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:8px 0}.stok i{display:block;min-width:2px}
 .leg{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin-bottom:12px}.leg b{font-size:20px}
 dialog{border:1px solid var(--line);border-radius:10px;padding:18px;max-width:560px;width:94%}
+#fa{flex-wrap:wrap}#fa>*{flex:1 1 22%;white-space:nowrap}@media(max-width:600px){#fa>*{flex-basis:44%}}button:disabled{opacity:.45;cursor:not-allowed}#imp-t th{position:sticky;top:0;background:#fff;z-index:1}#imp-t td.k{white-space:normal;min-width:280px;font-size:13px}#imp-t td.k div{margin:1px 0}
 dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog select,dialog textarea{width:100%;margin-top:2px}
 .g{display:grid;grid-template-columns:1fr 1fr;gap:10px}#login{max-width:320px;margin:15vh auto;padding:20px;background:#fff;border-radius:10px;display:grid;gap:10px}
 .mut{color:var(--mut)}:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
@@ -274,7 +275,7 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <div class="fr"><select id="th" onchange="cari()"><option value="">Semua tahun lulus</option></select><select id="st" onchange="cari()"><option value="">Semua status ijazah</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select></div>
 <div class="fr"><select id="jr" onchange="cari()"><option value="">Semua jurusan</option><option>IPA</option><option>IPS</option></select><select id="bk" onchange="cari()"><option value="">Semua (blanko)</option><option value="ada">Sudah memegang blanko</option><option value="belum">Belum memegang blanko</option></select></div>
 <div class="fr"><button class="p" onclick="cari()">Tampilkan</button><button onclick="resetF()">Reset filter</button></div>
-<div class="fr"><button data-iz="lulusan.ubah" onclick="formL()">+ Tambah lulusan</button><button data-iz="lulusan.ubah" onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"></div></div>
+<div class="fr" id="fa"><button data-iz="lulusan.ubah" onclick="formL()">+ Tambah lulusan</button><button data-iz="lulusan.ubah" onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"><button data-iz="lulusan.lihat" onclick="ekspor()">Ekspor CSV</button><button data-iz="riwayat.lihat" onclick="bukaRiwayat()">Riwayat</button></div></div>
 <div class="cnt" id="cnt"></div><div id="rows"></div></section>
 <section id="t2" hidden><div class="mc up"><div class="leg" id="leg" style="margin:0 0 8px"></div><div class="stok" id="stok"></div>
 <div class="fr srch"><select id="bs" onchange="blanko()"><option value="">Semua status</option><option>tersedia</option><option>terpakai</option><option>rusak</option><option>hilang</option><option>dikembalikan</option></select><button data-iz="blanko.stok" class="p adm" onclick="$('#dt').showModal()">+ Tambah stok</button></div></div>
@@ -292,7 +293,7 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 </main></div>
 <nav class="bn bna" id="bns"><button class="on" data-t="b" onclick="TB='b';sv()"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</button><button data-t="d" onclick="TB='d';sv()"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Data Diri</button><button data-t="i" onclick="TB='i';sv()"><svg viewBox="0 0 24 24"><path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg>Ijazah</button></nav>
 <nav class="bn bna" id="bna"><button id="n0" class="on" onclick="tab(0)"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</button><button data-iz="lulusan.lihat" id="n1" onclick="tab(1)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Lulusan</button><button data-iz="blanko.lihat" id="n2" onclick="tab(2)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Blanko</button><button data-iz="laporan.lihat" id="n3" onclick="tab(3)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Laporan</button></nav></div>
-<dialog id="df"><form method="dialog" onsubmit="return simpan(event)"><div class="g" id="fl"></div><div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" class="adm" id="hp" onclick="hapus()">Hapus</button><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
+<dialog id="df"><form method="dialog" onsubmit="return simpan(event)"><div class="g" id="fl"></div><div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" class="adm" id="hp" onclick="hapus()">Hapus</button><button type="button" id="hr" data-iz="riwayat.lihat" onclick="bukaRiwayat($('#fl [name=id]').value)">Riwayat</button><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
 <dialog id="dt"><form method="dialog" onsubmit="return tambah(event)"><div class="g"><label>Awalan nomor seri<input name="awalan" placeholder="DN-"></label><label>Panjang angka<input name="panjang" type="number" value="6"></label><label>Dari nomor<input name="dari" type="number" required></label><label>Sampai nomor<input name="sampai" type="number" required></label></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Tambah stok</button></div></form></dialog>
 <dialog id="du"><form method="dialog" onsubmit="return simpanU(event)"><h3 id="du-t" style="margin:0 0 12px;font-size:16px"></h3><div class="g">
@@ -309,6 +310,16 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
 <dialog id="di"><form method="dialog" onsubmit="return simpanI(event)"><div class="g"><label>Nama lembaga<input name="nama"></label><label>Kota (untuk tanggal surat)<input name="kota"></label><label style="grid-column:1/3">Alamat<input name="alamat"></label><label>Provinsi<input name="provinsi" placeholder="02 - Jawa Barat"></label><label>Rayon<input name="rayon" placeholder="19 - Karawang"></label><label>Kode satuan pendidikan<input name="kode" placeholder="12"></label><span></span><label>Nama kepala<input name="kepala"></label><label>Nama petugas blanko<input name="petugas"></label></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
+<dialog id="dr" style="max-width:940px"><h3 id="dr-t" style="margin:0 0 10px;font-size:16px">Riwayat perubahan data lulusan</h3>
+<div class="bar"><input id="dr-q" placeholder="Cari nama, NISN, atau nama petugas" oninput="tundaR()" style="flex:1;min-width:200px"><select id="dr-a" onchange="muatRiwayat()" style="width:auto"><option value="">Semua jenis</option><option value="tambah">Tambah</option><option value="ubah">Ubah</option><option value="hapus">Hapus</option><option value="impor-tambah">Impor: tambah</option><option value="impor-ubah">Impor: ubah</option></select></div>
+<div style="max-height:56vh;overflow:auto;border:1px solid var(--line);border-radius:6px"><table id="dr-tb" style="width:100%;border-collapse:collapse"></table></div><div id="dr-n" style="font-size:12.5px;color:var(--mut);margin-top:6px"></div>
+<div class="bar" style="margin:12px 0 0;justify-content:end"><button type="button" onclick="$('#dr').close()">Tutup</button></div></dialog>
+<dialog id="dimp" style="max-width:980px"><h3 style="margin:0 0 2px;font-size:16px">Pratinjau impor CSV</h3><div id="imp-f" style="font-size:13px;color:var(--mut);margin-bottom:10px"></div>
+<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px;font-size:14px"><label style="display:flex;gap:6px;align-items:center;color:var(--ink);font-size:14px"><input type="radio" name="imp-m" value="lewati" checked style="width:auto;margin:0" onchange="modeImp(this.value)">Lewati data yang sudah ada</label><label style="display:flex;gap:6px;align-items:center;color:var(--ink);font-size:14px"><input type="radio" name="imp-m" value="perbarui" style="width:auto;margin:0" onchange="modeImp(this.value)">Perbarui data yang sudah ada</label></div>
+<div id="imp-n" style="font-size:12.5px;color:var(--mut);margin-bottom:8px"></div><div id="imp-w"></div><div class="tg" id="imp-s" style="margin-bottom:8px"></div>
+<div style="margin-bottom:8px"><select id="imp-flt" onchange="isiImp()" style="width:auto"><option value="">Tampilkan semua baris</option><option value="masalah">Hanya yang bermasalah (salah atau peringatan)</option><option value="baru">Hanya data baru</option><option value="perbarui">Hanya yang diperbarui</option><option value="lain">Hanya dilewati / tanpa perubahan</option></select></div>
+<div style="max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:6px"><table id="imp-t" style="width:100%;border-collapse:collapse"></table></div>
+<div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="$('#dimp').close()">Batal</button><button type="button" class="p" id="imp-ok" onclick="simpanImp()" disabled>Simpan</button></div></dialog>
 <script>
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let T=localStorage.t,R=localStorage.r,D=[],tm,ME={izin:[]},LG='',CUR=null,CI=null;
@@ -435,12 +446,68 @@ $('#rows').innerHTML=D.map((r,i)=>`<div class="lc"><div class="lav j${E((r.jenja
 <div class="ac"><button class="p" onclick="lihat(${i})">Tampilkan</button>${r.no_seri?`<span class="tag terpakai">Blanko ${E(r.no_seri)}</span>`:can('blanko.pakai')?`<button onclick="pakai(${r.id})">Pakai blanko</button>`:''}${can('lulusan.ubah')?`<button onclick="formL(${i})">Ubah</button>`:''}</div></div></div>`).join('')||`<div class="kosong">${fl.length?'Tidak ada data yang cocok dengan filter. <button class="s" onclick="resetF()">Reset filter</button>':'Belum ada data. Tambah lulusan atau impor CSV.'}</div>`}
 function formL(i){const r=i==null?{status:'lulus'}:D[i];$('#fl').innerHTML=FL.map(([k,l,t])=>{const v=E((r[k]||'').toString().slice(0,t=='date'?10:99));
 return t&&t.startsWith('sel')?`<label>${l}<select name="${k}">${t.slice(4).split(',').map(o=>`<option ${o==r[k]?'selected':''}>${o}</option>`).join('')}</select></label>`:`<label>${l}<input name="${k}" type="${t||'text'}" value="${v}" ${k=='nama'?'required':''}></label>`}).join('')+`<input type="hidden" name="id" value="${r.id||''}">`;
-$('#hp').hidden=!r.id||!can('lulusan.hapus');$('#df').showModal()}
+$('#hp').hidden=!r.id||!can('lulusan.hapus');$('#hr').hidden=!r.id;$('#df').showModal()}
 async function simpan(e){const o=Object.fromEntries(new FormData(e.target));await api('lulusan',o);$('#df').close();cari();return false}
 async function hapus(){const id=$('#fl [name=id]').value;if(!confirm('Hapus data lulusan ini?'))return;await api('lulusan?id='+id,null,'DELETE');$('#df').close();cari()}
 async function pakai(id){if(!confirm('Ambil blanko tersedia berikutnya untuk lulusan ini?'))return;await api('blanko',{aksi:'pakai',lulusan_id:id});cari()}
-async function impor(el){const t=await el.files[0].text(),ls=t.trim().split(/\r?\n/),s=ls[0].includes(';')?';':',',h=ls.shift().split(s).map(x=>x.trim().toLowerCase().replace(/^upk$/,'peserta_upk'));
-const a=ls.map(l=>Object.fromEntries(l.split(s).map((v,i)=>[h[i],v.trim()])));const d=await api('lulusan',a);alert(d.masuk+' data masuk, '+d.dilewati+' dilewati (nama kosong, atau NISN/nomor ijazah sudah ada). Data lama tidak diubah.');el.value='';cari()}
+// ---- Ekspor CSV (cadangan; format sama dengan impor, jadi bisa diedit lalu diimpor lagi dengan mode Perbarui) ----
+function csvKeluar(d){const h=FL.map(x=>x[0]),sel=v=>{v=v==null?'':String(v);if(/^[=+@]|^-./.test(v))v="'"+v;return /[;"\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+return '\uFEFF'+[h.join(';'),...d.map(r=>h.map(k=>sel(r[k])).join(';'))].join('\r\n')}
+async function ekspor(){const d=[];for(let o=0;;o+=5000){const x=await api('lulusan?ekspor='+o);d.push(...x);if(x.length<5000)break}
+if(!d.length)return alert('Belum ada data lulusan untuk diekspor');
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csvKeluar(d)],{type:'text/csv;charset=utf-8'}));a.download='data-lulusan-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+// ---- Riwayat perubahan data lulusan ----
+let RID='',trw;const LB=()=>Object.fromEntries(FL),AKS={tambah:['Tambah','#dcfce7','#166534'],ubah:['Ubah','#dbeafe','#1e40af'],hapus:['Hapus','#fee2e2','#991b1b'],'impor-tambah':['Impor: tambah','#dcfce7','#166534'],'impor-ubah':['Impor: ubah','#dbeafe','#1e40af']};
+function bukaRiwayat(id){RID=id||'';$('#dr-q').value='';$('#dr-a').value='';$('#dr-t').textContent=RID?'Riwayat perubahan data ini':'Riwayat perubahan data lulusan';$('#dr').showModal();muatRiwayat()}
+function tundaR(){clearTimeout(trw);trw=setTimeout(muatRiwayat,300)}
+async function muatRiwayat(){let d;try{d=await api('lulusan?riwayat=1&id='+encodeURIComponent(RID)+'&aksi='+encodeURIComponent($('#dr-a').value)+'&q='+encodeURIComponent($('#dr-q').value))}catch(e){$('#dr').close();return}
+const lb=LB(),tw=w=>new Date(w).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}),dt=r=>{const x=r.detail||{};
+if(x.perubahan)return x.perubahan.map(p=>`<div>${E(lb[p.k]||p.k)}: <s style="color:var(--mut)">${E(p.lama??'(kosong)')}</s> → <b>${E(p.baru??'(kosong)')}</b></div>`).join('');
+if(x.salinan)return '<details><summary>Data ini dihapus. Lihat salinan lengkap</summary>'+Object.entries(x.salinan).filter(([,v])=>v!=null&&v!=='').map(([k,v])=>`<div>${E(lb[k]||k)}: <b>${E(v)}</b></div>`).join('')+'</details>';
+return r.aksi=='impor-tambah'?'Ditambahkan lewat impor CSV':'Data baru ditambahkan'};
+$('#dr-tb').innerHTML='<thead><tr><th>Waktu</th><th>Jenis</th><th>Data</th><th>Petugas</th><th>Rincian</th></tr></thead><tbody>'+(d.length?d.map(r=>{const a=AKS[r.aksi]||[r.aksi,'#e6eaef','#475569'];return `<tr><td>${E(tw(r.waktu))}</td><td><span class="tag" style="background:${a[1]};color:${a[2]}">${a[0]}</span></td><td>${E(r.nama)||'-'}<br><small style="color:var(--mut)">${E(r.nisn)||''} ${E(r.jenjang)||''}</small></td><td>${E(r.oleh)||'-'}</td><td class="k" style="white-space:normal;min-width:260px;font-size:13px">${dt(r)}</td></tr>`}).join(''):'<tr><td colspan="5" style="color:var(--mut)">Belum ada riwayat yang cocok</td></tr>')+'</tbody>';
+$('#dr-n').textContent=d.length>=300?'Menampilkan 300 catatan terbaru. Persempit dengan pencarian atau jenis.':'Perubahan sebelum fitur ini dipasang tidak tercatat.'}
+// ---- Impor CSV: baca berkas -> pratinjau (server memeriksa SEMUA baris, belum menulis apa pun) -> simpan sekaligus ----
+let IMP=null;
+const HI={baru:['Baru','#dcfce7','#166534'],perbarui:['Diperbarui','#dbeafe','#1e40af'],sama:['Tanpa perubahan','#e6eaef','#475569'],lewati:['Dilewati','#e6eaef','#475569'],error:['Salah','#fee2e2','#991b1b']};
+function csv(t,s){const rows=[];let r=[],f='',q=false,ln=1,st=1;const akhir=()=>{r.push(f);f='';if(r.some(x=>x.trim()!==''))rows.push({v:r,n:st});r=[]};
+for(let i=0;i<t.length;i++){const c=t[i];
+if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else q=false}else{if(c=='\n')ln++;f+=c}}
+else if(c=='"'&&f==='')q=true;
+else if(c==s){r.push(f);f=''}
+else if(c=='\n'||c=='\r'){if(c=='\r'&&t[i+1]=='\n')i++;akhir();ln++;st=ln}
+else f+=c}
+if(q)throw new Error('Tanda kutip (") di berkas tidak ditutup. Periksa isi berkas CSV.');akhir();return rows}
+async function impor(el){const f=el.files[0];el.value='';if(!f)return;
+let t;try{t=(await f.text()).replace(/^\uFEFF/,'')}catch(e){return alert('Berkas tidak bisa dibaca')}
+const l1=t.split(/\r?\n/,1)[0],s=[';','\t',','].map(c=>[c,l1.split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];
+let rows;try{rows=csv(t,s)}catch(e){return alert(e.message)}
+if(rows.length<2)return alert('Berkas kosong atau hanya berisi baris judul kolom');
+const h=rows[0].v.map(x=>x.trim().toLowerCase());
+if(!h.includes('nama'))return alert('Baris pertama harus berisi judul kolom, minimal "nama". Judul yang terbaca: '+h.join(', '));
+if(rows.length-1>10000)return alert('Terlalu banyak baris ('+(rows.length-1)+'). Maksimal 10.000 baris per berkas, silakan pecah berkas (misalnya per beberapa tahun).');
+IMP={mode:'lewati',seq:0,baris:rows.slice(1).map(({v,n})=>{const o={_baris:n};h.forEach((k,i)=>{if(k)o[k]=(v[i]||'').trim()});const x=v.slice(h.length).filter(z=>z.trim()!=='').length;if(x)o._lebih=x;return o})};
+if(JSON.stringify(IMP.baris).length>4e6){IMP=null;return alert('Berkas terlalu besar untuk dikirim sekali. Pecah menjadi beberapa berkas yang lebih kecil (misalnya per beberapa tahun).')}
+$('#imp-f').textContent=f.name+' • '+IMP.baris.length+' baris data';$('#imp-flt').value='';$('[name=imp-m][value=lewati]').checked=true;
+$('#dimp').showModal();await pratinjau()}
+function modeImp(m){IMP.mode=m;pratinjau()}
+async function pratinjau(){const id=++IMP.seq;$('#imp-ok').disabled=true;$('#imp-t').innerHTML='';$('#imp-w').innerHTML='';$('#imp-s').textContent='Memeriksa semua baris…';
+let d;try{d=await api('lulusan',{aksi:'impor',mode:IMP.mode,simpan:false,baris:IMP.baris})}catch(e){if(id==IMP.seq)$('#dimp').close();return}
+if(id!=IMP.seq)return;IMP.d=d;isiImp()}
+function isiImp(){const d=IMP.d,r=d.ringkasan,pb=IMP.mode=='perbarui',tulis=r.baru+r.perbarui;
+$('#imp-n').textContent=pb?'Baris yang NISN + jenjangnya sudah ada akan diperbarui. Hanya kolom yang terisi di CSV yang menimpa; sel kosong tidak menghapus data lama.':'Baris yang NISN + jenjangnya sudah ada dilewati, data lama tidak diubah. Belum ada data yang tersimpan sampai Anda menekan Simpan.';
+const chip=(l,n,k)=>n?`<span class="tag" style="background:${HI[k][1]};color:${HI[k][2]}">${l}: ${n}</span>`:'';
+$('#imp-s').innerHTML=chip('Baru',r.baru,'baru')+chip('Diperbarui',r.perbarui,'perbarui')+chip('Tanpa perubahan',r.sama,'sama')+chip('Dilewati',r.lewati,'lewati')+chip('Salah',r.error,'error')+(r.peringatan?`<span class="tag" style="background:#fef3c7;color:#92400e">Peringatan: ${r.peringatan} baris</span>`:'');
+$('#imp-w').innerHTML=(r.error?`<div style="background:#fee2e2;color:#991b1b;padding:8px 10px;border-radius:6px;font-size:13px;margin-bottom:8px"><b>${r.error} baris salah.</b> Tidak ada data yang disimpan. Perbaiki baris tersebut di berkas CSV lalu impor ulang.</div>`:'')+(d.kolomAbaikan.length?`<div style="background:#fef3c7;color:#92400e;padding:8px 10px;border-radius:6px;font-size:13px;margin-bottom:8px">Kolom tidak dikenali dan diabaikan: <b>${d.kolomAbaikan.map(E).join(', ')}</b></div>`:'');
+$('#imp-w').innerHTML+=d.dipotong?`<div style="background:#e0e7ff;color:#3730a3;padding:8px 10px;border-radius:6px;font-size:13px;margin-bottom:8px">Menampilkan ${d.baris.length} dari ${r.total} baris. Semua baris tetap diperiksa dan akan disimpan; baris salah ditampilkan lebih dulu.</div>`:'';
+const fl=$('#imp-flt').value,ok=x=>!fl||(fl=='masalah'?x.galat.length||x.peringatan.length:fl=='lain'?x.hasil=='lewati'||x.hasil=='sama':x.hasil==fl);
+const ket=x=>x.galat.map(g=>`<div style="color:#991b1b">✕ ${E(g)}</div>`).join('')+x.peringatan.map(g=>`<div style="color:#92400e">⚠ ${E(g)}</div>`).join('')+x.perubahan.map(p=>`<div>${E(p.k)}: <s style="color:var(--mut)">${E(p.lama??'(kosong)')}</s> → <b>${E(p.baru)}</b></div>`).join('');
+$('#imp-t').innerHTML='<thead><tr><th>Baris</th><th>Hasil</th><th>Nama</th><th>NISN</th><th>Jenjang</th><th>Keterangan</th></tr></thead><tbody>'+d.baris.filter(ok).map(x=>{const h=HI[x.hasil];return `<tr><td>${x.n}</td><td><span class="tag" style="background:${h[1]};color:${h[2]}">${h[0]}</span></td><td>${E(x.nama)||'-'}</td><td>${E(x.nisn)||'-'}</td><td>${E(x.jenjang)||'-'}</td><td class="k">${ket(x)}</td></tr>`}).join('')+'</tbody>';
+const b=$('#imp-ok');b.disabled=!!r.error||!tulis;b.textContent=r.error?'Perbaiki dulu baris yang salah':tulis?`Simpan ${tulis} data`:'Tidak ada yang perlu disimpan'}
+async function simpanImp(){const r=IMP.d.ringkasan;
+if(IMP.mode=='perbarui'&&r.perbarui&&!confirm(`Perbarui ${r.perbarui} data yang sudah ada dan tambah ${r.baru} data baru? Perubahan tidak bisa dibatalkan.`))return;
+$('#imp-ok').disabled=true;
+try{const d=await api('lulusan',{aksi:'impor',mode:IMP.mode,simpan:true,baris:IMP.baris}),x=d.ringkasan;$('#dimp').close();IMP=null;alert(`Impor selesai: ${x.baru} data baru, ${x.perbarui} diperbarui, ${x.lewati+x.sama} tidak berubah.`);cari()}catch(e){pratinjau()}}
 const WR={tersedia:'#0f766e',terpakai:'#2563eb',rusak:'#b91c1c',hilang:'#7f1d1d',dikembalikan:'#b45309'};
 async function blanko(){const d=await api('blanko?status='+$('#bs').value),tot=Object.values(d.ringkas).reduce((a,b)=>a+b,0)||1;
 $('#leg').innerHTML=Object.keys(WR).map(k=>`<div><b style="color:${WR[k]}">${d.ringkas[k]||0}</b><br>${k}</div>`).join('');
@@ -456,7 +523,7 @@ const I={};let O='portrait';
 const tg=d=>d?new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'';
 function bukaI(){document.querySelectorAll('#di [name]').forEach(e=>e.value=I[e.name]||'');$('#di').showModal()}
 async function simpanI(e){const o=Object.fromEntries(new FormData(e.target));await api('pengaturan',{identitas:o});Object.assign(I,o);$('#di').close();lembaga();return false}
-const kop=()=>`<div style="text-align:center"><b style="font-size:15pt">${E(I.nama||'NAMA LEMBAGA')}</b><br>${E(I.alamat||'')}</div><hr>`;
+const lgu=()=>{let u=gl();if(u[0]=='/')u=location.origin+u;return u},kop=()=>kop2();
 const jd=t=>`<h3 style="text-align:center;margin:8px 0">${t}</h3>`;
 const tb=(h,rows)=>`<table><tr><th>No</th>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr><td>${i+1}</td>${r.map(c=>`<td>${E(c)}</td>`).join('')}</tr>`).join('')}</table>`;
 const ttd=(...p)=>`<p style="text-align:right">${E(I.kota||'................')}, ${tg(new Date())}</p><table class="nb"><tr>${p.map(x=>`<td style="text-align:center;width:${100/p.length}%">${x[0]}<br><br><br><br><u>${E(x[1]||'................')}</u></td>`).join('')}</tr></table>`;
@@ -467,7 +534,7 @@ const j1=P?`PENDIDIKAN KESETARAAN PROGRAM ${P.toUpperCase()} SETARA ${SD[P]}`:'P
 const kv=(a,b,t)=>`<tr><td width="150" nowrap>${a}</td><td>: ${t?'<b>'+E(b)+'</b>':E(b)}</td></tr>`;
 const sat=[I.kode,nm.toUpperCase()].filter(Boolean).join(' - ');
 const rows=L.map((r,i)=>`<tr><td align="center">${i+1}</td><td>${nb(r.nis)}</td><td>${nb(r.nisn)}</td><td>${nb(r.peserta_upk)}</td><td>${nb((r.nama||'').toUpperCase())}</td><td>${nb(r.tempat_lahir)}</td><td>${nb(tgp(r.tgl_lahir))}</td><td>${nb(r.ortu)}</td><td>${nb(r.no_seri||r.no_ijazah)}</td><td align="center">${nb(r.tahun_lulus)}</td></tr>`).join('');
-return `<div class="kbw"><p class="kt" align="center">KENDALI BLANGKO IJAZAH<br>${j1}<br>${E(nm.toUpperCase())}${tp?'<br>'+tp:''}</p>
+return `<div class="kbw"><table class="nb" style="margin:0 0 6px" width="100%"><tr><td style="width:80px"><img src="${lgu()}" alt="" style="width:70px;height:70px;object-fit:contain"></td><td><p class="kt" align="center">KENDALI BLANGKO IJAZAH<br>${j1}<br>${E(nm.toUpperCase())}${tp?'<br>'+tp:''}</p></td><td style="width:80px"></td></tr></table>
 <table class="nb ki" border="0" cellspacing="0" cellpadding="1" width="100%">${kv('Provinsi',I.provinsi||'')}${kv('Rayon',I.rayon||'')}${kv('Satuan Pendidikan',sat,1)}</table>
 <table class="kb" border="1" cellspacing="0" cellpadding="3" width="100%"><thead><tr><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:4%">Urt</th><th bgcolor="#dbe4ff" align="center" colspan="3">Nomor</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:18%">Nama</th><th bgcolor="#dbe4ff" align="center" colspan="2" rowspan="2">Tempat, Tgl Lahir</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:12%">Nama Orang Tua</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:12%">Nomor Seri Ijazah</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:5%">Tahun Lulus</th></tr>
 <tr><th bgcolor="#dbe4ff" align="center" style="width:6%">NIS</th><th bgcolor="#dbe4ff" align="center" style="width:10%">NISN</th><th bgcolor="#dbe4ff" align="center" style="width:13%">Peserta UPK</th></tr></thead><tbody>${rows||'<tr><td colspan="10" style="text-align:center">Tidak ada data</td></tr>'}</tbody></table>
@@ -502,7 +569,7 @@ const bl=await new Promise(r=>c.toBlob(r,'image/jpeg',.92));if(!bl)throw new Err
 const a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=String(nama||'cetak').replace(/[\\/:*?"<>|]/g,'')+'.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
 catch(e){alert(e.message||'JPG gagal dibuat')}finally{f&&f.remove()}}
 function cetakL(fmt){if(!$('#pv table'))return alert('Tampilkan laporan dulu');keluarkan(fmt,$('#pv').innerHTML,O,$('#lj').selectedOptions[0].text)}
-const kop2=()=>{let u=gl();if(u[0]=='/')u=location.origin+u;return `<table class="nb" style="margin:0"><tr><td style="width:80px"><img src="${u}" alt="" style="width:70px;height:70px;object-fit:contain"></td><td style="text-align:center"><b style="font-size:15pt">${E((I.nama||'NAMA LEMBAGA').toUpperCase())}</b><br>${E(I.alamat||'')}</td><td style="width:80px"></td></tr></table><hr style="border:0;border-top:3px double #000;margin:6px 0 10px">`};
+const kop2=()=>{const u=lgu();return `<table class="nb" style="margin:0"><tr><td style="width:80px"><img src="${u}" alt="" style="width:70px;height:70px;object-fit:contain"></td><td style="text-align:center"><b style="font-size:15pt">${E((I.nama||'NAMA LEMBAGA').toUpperCase())}</b><br>${E(I.alamat||'')}</td><td style="width:80px"></td></tr></table><hr style="border:0;border-top:3px double #000;margin:6px 0 10px">`};
 function lembar(r){const row=(a,b)=>`<tr><td style="width:36%;font-weight:bold">${a}</td><td>${E(b)||'-'}</td></tr>`,
 sec=(t,L)=>`<p style="margin:14px 0 4px"><b>${t}</b></p><table>${L.map(x=>row(x[0],x[1])).join('')}</table>`;
 return kop2()+jd('<u>DATA LULUSAN</u>')+sec('A. Data Diri',[['Nama lengkap',(r.nama||'').toUpperCase()],['NIS',r.nis],['NISN',r.nisn],['Peserta UPK',r.peserta_upk],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])

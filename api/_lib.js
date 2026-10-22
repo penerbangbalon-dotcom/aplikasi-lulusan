@@ -8,6 +8,7 @@ const IZIN = [
   ['lulusan.lihat', 'Melihat data lulusan', 'Data lulusan'],
   ['lulusan.ubah', 'Menambah, mengubah, dan impor CSV data lulusan', 'Data lulusan'],
   ['lulusan.hapus', 'Menghapus data lulusan', 'Data lulusan'],
+  ['riwayat.lihat', 'Melihat riwayat perubahan data lulusan (siapa mengubah apa)', 'Data lulusan'],
   ['blanko.lihat', 'Melihat stok dan riwayat blanko', 'Blanko ijazah'],
   ['blanko.pakai', 'Memakai blanko untuk lulusan', 'Blanko ijazah'],
   ['blanko.stok', 'Menambah stok blanko', 'Blanko ijazah'],

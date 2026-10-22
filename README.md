@@ -3,7 +3,7 @@
 2. Push folder ini ke GitHub, impor ke Vercel.
 3. Environment Variables di Vercel: DATABASE_URL, SECRET (teks acak panjang), ADMIN_PASSWORD, OPERATOR_PASSWORD.
 4. Laporan (menu Laporan): isi Identitas lembaga dulu (nama, kota, alamat, provinsi, rayon, kode satuan pendidikan, kepala). Laporan "Kendali blanko ijazah" berorientasi landscape, lalu Unduh Word (.doc) atau Cetak atau simpan PDF.
-5. Impor CSV: baris pertama berisi nama kolom (nama, nisn, nik, tempat_lahir, tgl_lahir, ortu, jenjang, jurusan, tahun_lulus, no_ijazah, status), tanggal format YYYY-MM-DD.
+5. Impor CSV: baris pertama berisi nama kolom (nama, nisn, nik, tempat_lahir, tgl_lahir, ortu, jenjang, jurusan, tahun_lulus, no_ijazah, status). Aturan lengkap ada di bagian Versi 4.2.
 6. Login siswa: pilih tahun lulusan, isi nama lengkap persis seperti di data, kata sandi = tanggal lahir (17082008, 17-08-2008, atau 2008-08-17). Siswa hanya melihat datanya sendiri. Tanggal lahir di data lulusan wajib terisi.
 7. Jika database menumpang di proyek Supabase yang sudah dipakai aplikasi lain: pastikan nama tabel lulusan, blanko, blanko_log, login_gagal belum ada. schema.sql sudah memuat pengaman RLS (keamanan.sql). Untuk proyek yang sudah menjalankan schema.sql lama, jalankan keamanan.sql saja.
 
@@ -17,6 +17,22 @@
 
 ## Versi 4.1
 14. Jalankan migrasi-v5.sql (menambah kolom NIS) SEBELUM memakai versi ini. NIS = NIPD di Dapodik. Pada impor CSV, kolom bernama nis atau nipd sama-sama masuk ke NIS; kolom peserta_upk (atau upk) masuk ke Nomor Peserta UPK. migrasi-v5.sql juga menambah kolom peserta_upk.
-15. Impor tahun lain aman: data lama tidak pernah ditimpa. Baris yang NISN atau nomor ijazahnya sudah ada dilewati, bukan diperbarui. Pilihan tahun di login siswa otomatis bertambah.
+15. (Diganti oleh versi 4.2, lihat di bawah.) Pilihan tahun di login siswa otomatis bertambah.
 16. Cetakan siswa kini memuat nama lembaga, logo, dan tanda tangan kepala (dari Identitas lembaga). Jika masih bertuliskan NAMA LEMBAGA, buka login admin, menu Laporan, Identitas lembaga, lalu klik Simpan sekali.
 17. Dashboard siswa dikembalikan seperti v3.8 (Beranda, Data Diri, Ijazah, progres ijazah). Tombol Cetak Data di Beranda membuka halaman detail dengan menu Cetak PDF/JPG, dan tombol Kembali kembali ke dashboard.
+
+## Versi 4.2: impor CSV aman, bisa memperbarui, NISN unik per jenjang
+18. Jalankan migrasi-v6.sql di database SEBELUM memakai versi ini (aman dijalankan berulang, data lama tidak berubah). Instalasi baru cukup schema.sql.
+19. NISN kini unik per jenjang, bukan di seluruh database. Siswa yang lulus Paket B lalu Paket C dapat tercatat dua kali dengan NISN yang sama. Pasangan NISN + jenjang yang sama tetap ditolak. Nomor ijazah tetap unik di seluruh database.
+20. Impor CSV kini bertahap: (a) pilih berkas, (b) server memeriksa SEMUA baris dan menampilkan pratinjau (baru, diperbarui, dilewati, salah, peringatan) tanpa menyimpan apa pun, (c) tombol Simpan menyimpan semuanya dalam satu transaksi. Bila ada satu baris salah, tombol Simpan nonaktif dan tidak ada data yang masuk. Server memeriksa ulang saat Simpan, jadi pratinjau tidak bisa dilewati.
+21. Dua mode impor. "Lewati data yang sudah ada" (bawaan): baris yang NISN + jenjangnya sudah ada diabaikan. "Perbarui data yang sudah ada": data lama dicocokkan lewat NISN + jenjang lalu diperbarui. Hanya kolom yang terisi di CSV yang menimpa; sel kosong TIDAK menghapus data lama. Pratinjau menampilkan nilai lama dan baru per kolom.
+22. Aturan pemeriksaan baris. Salah (memblokir simpan): nama kosong; tanggal tidak valid (misalnya 31-02-2005); jenjang bukan Paket A/B/C; jurusan bukan IPA/IPS; status tidak dikenal; tahun lulus bukan 4 digit; NISN atau NIK rusak oleh Excel (contoh 1.23E+09); jenjang kosong padahal NISN terisi; NISN + jenjang atau nomor ijazah ganda di dalam berkas; nomor ijazah sudah dipakai orang lain; jumlah kolom lebih banyak dari judul. Peringatan (tidak memblokir): NISN bukan 10 digit, NIK bukan 16 digit, baris tanpa NISN (tidak bisa dicocokkan, selalu dihitung baru). Kolom yang judulnya tidak dikenal ditampilkan dan diabaikan.
+23. Format tanggal yang diterima: YYYY-MM-DD, DD-MM-YYYY, DD/MM/YYYY, DD.MM.YYYY (urutan hari-bulan-tahun). Berkas CSV dari Excel (UTF-8 dengan BOM), pemisah koma, titik koma, atau tab, dan sel bertanda kutip yang memuat koma sudah didukung. Maksimal 10.000 baris per berkas (cukup untuk impor banyak tahun sekaligus; bila lebih, pecah per beberapa tahun).
+
+## Versi 4.3: riwayat perubahan, ekspor CSV, batas impor 10.000 baris
+24. Jalankan migrasi-v7.sql (tabel lulusan_log) SEBELUM memakai versi ini. Instalasi baru cukup schema.sql. Urutan untuk database lama: migrasi-v6.sql lalu migrasi-v7.sql.
+25. Riwayat perubahan data lulusan: setiap tambah, ubah, hapus (manual maupun lewat impor CSV) dicatat bersama nama petugas dan waktunya, dalam transaksi yang sama dengan perubahannya. Rincian ubah memuat nilai lama dan baru per kolom. Rincian hapus menyimpan salinan lengkap data yang dihapus. Dibuka lewat tombol Riwayat di Data Lulusan (semua data) atau di form edit (satu data).
+26. Hak akses baru: "Melihat riwayat perubahan data lulusan" (riwayat.lihat). Administrator otomatis memilikinya. Peran lain, termasuk Operator bawaan, TIDAK memilikinya sampai dicentang di menu Pengguna & Peran.
+27. Batasan riwayat: perubahan sebelum v7 tidak tercatat. Login dengan kata sandi bawaan (ADMIN_PASSWORD atau OPERATOR_PASSWORD) hanya tercatat sebagai "admin" atau "operator", jadi untuk melacak orangnya buatlah pengguna sendiri di menu Pengguna & Peran. Pemakaian blanko tetap tercatat di riwayat blanko, bukan di riwayat lulusan.
+28. Ekspor CSV (tombol di Data Lulusan): mengunduh seluruh data lulusan, memakai pemisah titik koma dan UTF-8, sehingga langsung terbuka benar di Excel Indonesia. Kolomnya sama dengan format impor: berkas bisa diedit lalu diimpor lagi dengan mode "Perbarui". Ekspor BUKAN cadangan lengkap (tidak memuat blanko, riwayat, dan pengguna). Lihat PANDUAN-CADANGAN.md.
+29. Impor CSV: batas naik menjadi 10.000 baris per berkas. Pratinjau menampilkan paling banyak 3.000 baris (baris salah didahulukan), tetapi SEMUA baris tetap diperiksa dan disimpan. NISN yang kehilangan angka 0 di depan akibat Excel (12345678 menjadi 0012345678) dilengkapi otomatis, termasuk saat mencocokkan dengan data lama.
