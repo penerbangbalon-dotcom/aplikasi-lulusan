@@ -1,4 +1,4 @@
-const { pool, token, limit, gagal, fail } = require('./_lib');
+const { pool, token, limit, gagal, fail, cocok } = require('./_lib');
 const pad = x => String(x).padStart(2, '0');
 const tglIso = s => { // terima 17082008, 17-08-2008, 17/08/2008, 2008-08-17
   s = String(s || '').trim();
@@ -20,7 +20,15 @@ module.exports = async (req, res) => {
       if (r.rows.length !== 1) { await gagal(ip); return res.status(401).json({ error: 'Nama, tahun lulus, atau tanggal lahir tidak cocok' }); }
       return res.json({ token: token('siswa', r.rows[0].id), role: 'siswa' });
     }
-    const p = b.password;
+    const p = b.password, un = String(b.username || '').trim().toLowerCase();
+    if (un) { // pengguna di database
+      const r = (await pool.query('select id,sandi,aktif from pengguna where username=$1', [un])).rows[0];
+      // hash tiruan agar waktu respons sama baik username ada maupun tidak
+      const ok = cocok(p || '', r ? r.sandi : '0:0') && r && r.aktif;
+      if (!ok) { await gagal(ip); return res.status(401).json({ error: 'Username atau kata sandi salah, atau akun nonaktif' }); }
+      return res.json({ token: token('user', r.id), role: 'user' });
+    }
+    // tanpa username: kata sandi bawaan dari Environment Variables (cadangan jika lupa kata sandi pengguna)
     const role = p && p === process.env.ADMIN_PASSWORD ? 'admin' : p && p === process.env.OPERATOR_PASSWORD ? 'operator' : null;
     if (!role) { await gagal(ip); return res.status(401).json({ error: 'Kata sandi salah' }); }
     res.json({ token: token(role), role });

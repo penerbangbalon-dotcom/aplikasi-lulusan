@@ -2,7 +2,7 @@ const { pool, auth, fail, err } = require('./_lib');
 const F = ['nisn','nik','nama','tempat_lahir','tgl_lahir','ortu','jenjang','jurusan','tahun_lulus','no_ijazah','tgl_terbit','tgl_diambil','penerima','status','catatan'];
 const clean = o => F.map(k => (o[k] === '' || o[k] === undefined ? null : o[k]));
 module.exports = async (req, res) => {
-  const role = auth(req, res); if (!role) return;
+  const u = await auth(req, res, req.method === 'GET' ? 'lulusan.lihat' : req.method === 'DELETE' ? 'lulusan.hapus' : 'lulusan.ubah'); if (!u) return;
   try {
     if (req.method === 'GET') {
       const { q = '', tahun = '', status = '', jenjang = '', jurusan = '', blanko = '' } = req.query, like = '%' + q + '%';
@@ -24,7 +24,6 @@ module.exports = async (req, res) => {
       return res.json({ ok: 1 });
     }
     if (req.method === 'DELETE') {
-      if (role !== 'admin') throw err(403, 'Hanya admin yang boleh menghapus');
       const x = await pool.query('select blanko_id from lulusan where id=$1', [req.query.id]);
       if (x.rows[0] && x.rows[0].blanko_id) throw err(400, 'Lulusan ini sudah memegang blanko. Tandai blankonya rusak dulu.');
       await pool.query('delete from lulusan where id=$1', [req.query.id]);
