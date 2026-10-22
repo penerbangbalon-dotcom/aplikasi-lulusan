@@ -16,6 +16,6 @@
 13. Simpan JPG memuat pustaka html2canvas 1.4.1 dari cdn.jsdelivr.net saat dipakai pertama kali, jadi perlu koneksi internet.
 
 ## Versi 4.1
-14. Jalankan migrasi-v5.sql (menambah kolom NIS) SEBELUM memakai versi ini. NIS = NIPD di Dapodik. Pada impor CSV, kolom bernama nis atau nipd sama-sama masuk ke NIS.
+14. Jalankan migrasi-v5.sql (menambah kolom NIS) SEBELUM memakai versi ini. NIS = NIPD di Dapodik. Pada impor CSV, kolom bernama nis atau nipd sama-sama masuk ke NIS; kolom peserta_upk (atau upk) masuk ke Nomor Peserta UPK. migrasi-v5.sql juga menambah kolom peserta_upk.
 15. Impor tahun lain aman: data lama tidak pernah ditimpa. Baris yang NISN atau nomor ijazahnya sudah ada dilewati, bukan diperbarui. Pilihan tahun di login siswa otomatis bertambah.
 16. Cetakan siswa kini memuat nama lembaga, logo, dan tanda tangan kepala (dari Identitas lembaga). Jika masih bertuliskan NAMA LEMBAGA, buka login admin, menu Laporan, Identitas lembaga, lalu klik Simpan sekali.
