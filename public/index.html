@@ -39,6 +39,35 @@ dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog s
 .bn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;border-top:1px solid #e2e8f0;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
 .bn button{flex:1;border:0;background:none;display:grid;gap:2px;justify-items:center;font-size:12px;color:#64748b;padding:6px}
 .bn button.on{color:#2563eb;font-weight:600}.bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+header{display:flex;justify-content:space-between;align-items:center;flex-wrap:nowrap;gap:12px;background:linear-gradient(160deg,#1e40af,#2563eb 55%,#3b82f6);padding:18px 20px 72px;border-radius:0 0 26px 26px}
+header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;padding:5px 14px;font-size:13px;flex:none}
+#app{max-width:760px;margin:0 auto;min-height:100vh;background:#f3f5fb}main{padding:0 0 96px;max-width:none}.bna{max-width:760px}
+.srch input,.srch select{width:100%;border:0;background:#f3f5fb;border-radius:12px;padding:11px 14px}
+.fr{display:flex;gap:8px;margin-top:10px}.fr>*{flex:1;min-width:0}.fr button{border-radius:12px;padding:10px}.fr button.p{background:#2563eb;border-color:#2563eb}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:2px}.chips button{flex:none;border-radius:99px;padding:6px 16px;border:1px solid #dbe3f0;background:#fff;color:#475569;font-size:14px}
+.chips button.on{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600}
+.cnt{margin:0 20px 10px;color:var(--mut);font-size:13px}
+.lc{display:flex;gap:12px;background:#fff;border-radius:16px;margin:0 16px 10px;padding:14px;box-shadow:0 2px 10px rgba(30,64,175,.07)}
+.lav{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:700;flex:none}
+.jA{background:#ccfbf1;color:#0f766e}.jB{background:#ffedd5;color:#c2410c}.jC{background:#dbeafe;color:#1d4ed8}
+.lb{flex:1;min-width:0;display:grid;gap:5px}.lb b{font-size:15px;line-height:1.3}.lb small{color:var(--mut);word-break:break-all}
+.tg{display:flex;flex-wrap:wrap;gap:6px}.tag.s-lulus{background:#e0e7ff;color:#3730a3}.tag.s-tercetak{background:#fef3c7;color:#92400e}.tag.s-diambil{background:#dcfce7;color:#166534}.tag.s-duplikat{background:#fee2e2;color:#991b1b}
+.ac{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center}.ac button{border-radius:99px;padding:4px 12px;font-size:13px}.ac button.p{background:#2563eb;border-color:#2563eb}
+.hd{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.kosong{text-align:center;color:var(--mut);padding:30px 16px}
+#t2 .leg,#t2 .stok{margin-left:0;margin-right:0}
+
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px}
+.tl{border:0;background:none;display:grid;justify-items:center;gap:6px;font-size:12px;color:#334155;padding:0;line-height:1.25;text-align:center}
+.tl i{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#e0e7ff;color:#1d4ed8}
+.tl:nth-child(4n+2) i{background:#ccfbf1;color:#0f766e}.tl:nth-child(4n+3) i{background:#ffedd5;color:#c2410c}.tl:nth-child(4n) i{background:#fce7f3;color:#be185d}
+.tl svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.m3 button{border:0;border-radius:14px;padding:12px 6px;text-align:center;display:grid;gap:2px}.m3 b{font-size:22px}.m3 small{font-size:12px}
+.bar2{display:grid;grid-template-columns:110px 1fr 36px;gap:10px;align-items:center;width:100%;border:0;background:none;padding:6px 0;font-size:13px;text-align:left}
+.bar2 em{display:block;height:8px;border-radius:99px;background:#e8edf5;overflow:hidden}.bar2 em i{display:block;height:100%;border-radius:99px}.bar2 b{text-align:right}
+.warn{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fef3c7;color:#92400e;font-size:13px}.warn.bad{background:#fee2e2;color:#991b1b}.warn.ok{background:#dcfce7;color:#166534}
 </style></head><body>
 <div id="login"><h2 style="margin:0">Masuk</h2>
 <div class="bar" style="margin:0"><button id="pa" class="p" onclick="peran('admin')">Admin</button><button id="ps" onclick="peran('siswa')">Siswa</button></div>
@@ -49,22 +78,27 @@ dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog s
 <button class="p" onclick="masuk()">Masuk</button></div>
 <div id="my" hidden></div>
 <div id="app" hidden>
-<header><h1>Data Lulusan dan Kendali Blanko</h1><nav><button id="n1" class="on" onclick="tab(1)">Lulusan</button><button id="n2" onclick="tab(2)">Blanko ijazah</button><button id="n3" onclick="tab(3)">Laporan</button></nav><button class="s" onclick="keluar()">Keluar</button></header>
+<header><h1>Data Lulusan dan Kendali Blanko</h1><button onclick="keluar()">Keluar</button></header>
 <main>
-<section id="t1"><div class="bar"><input id="q" placeholder="Cari nama, NISN, NIK, no. ijazah, no. seri blanko" style="flex:1;min-width:220px" oninput="tunda()">
-<input id="th" type="number" placeholder="Tahun lulus" style="width:120px" oninput="tunda()"><select id="st" onchange="cari()"><option value="">Semua status</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select>
-<button class="p" onclick="form()">Tambah lulusan</button><button onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"></div>
-<div class="w"><table><thead><tr><th>Nama</th><th>NISN</th><th>Jenjang</th><th>Lulus</th><th>No. ijazah</th><th>Blanko</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></section>
-<section id="t2" hidden><div class="leg" id="leg"></div><div class="stok" id="stok"></div>
-<div class="bar"><select id="bs" onchange="blanko()"><option value="">Semua status</option><option>tersedia</option><option>terpakai</option><option>rusak</option><option>hilang</option><option>dikembalikan</option></select><button class="p adm" onclick="$('#dt').showModal()">Tambah stok blanko</button></div>
-<div class="w"><table><thead><tr><th>No. seri</th><th>Status</th><th>Pemegang</th><th>Keterangan</th><th></th></tr></thead><tbody id="brows"></tbody></table></div></section>
-<section id="t3" hidden><div class="bar"><select id="lj"><option value="induk">Buku induk lulusan</option><option value="rekap">Rekap penggunaan blanko</option><option value="terima">Berita acara serah terima ijazah</option><option value="musnah">Berita acara pemusnahan blanko rusak</option></select>
+<section id="t0"><div class="mc up"><div class="hd"><div><small class="mut">Total lulusan</small><div class="big" id="d-tot">0</div></div><select id="dy" onchange="DY=this.value;dash()" style="width:auto;border-radius:12px;background:#f3f5fb;border:0"><option value="">Semua tahun</option></select></div><div class="m3" id="d-j"></div></div>
+<div class="mc"><h3>Menu Pintasan</h3><div class="mg"><button class="tl" onclick="tab(1)"><i><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></i>Data Lulusan</button><button class="tl" onclick="tab(1);formL()"><i><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/></svg></i>Tambah Lulusan</button><button class="tl" onclick="$('#csv').click()"><i><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg></i>Impor CSV</button><button class="tl" onclick="tab(2)"><i><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg></i>Blanko Ijazah</button><button class="tl adm" onclick="$('#dt').showModal()"><i><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4zM3 12l9 4 9-4M3 17l9 4 9-4"/></svg></i>Tambah Stok Blanko</button><button class="tl" onclick="tab(3)"><i><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i>Laporan</button><button class="tl" onclick="ke3('induk')"><i><svg viewBox="0 0 24 24"><path d="M4 4h12a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M4 17a3 3 0 0 1 3-3h12"/></svg></i>Buku Induk</button><button class="tl" onclick="bukaI()"><i><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></i>Identitas Lembaga</button></div></div>
+<div class="mc"><h3>Status Ijazah</h3><div id="d-s"></div></div>
+<div class="mc"><h3>Stok Blanko</h3><div id="d-b"></div></div></section>
+<section id="t1" hidden><div class="mc up srch"><input id="q" placeholder="Cari nama, NISN, NIK, no. ijazah, no. seri blanko" oninput="tunda()">
+<div class="chips" id="jc"><button class="on" onclick="jen('',this)">Semua</button><button onclick="jen('Paket A',this)">Paket A</button><button onclick="jen('Paket B',this)">Paket B</button><button onclick="jen('Paket C',this)">Paket C</button></div>
+<div class="fr"><input id="th" type="number" placeholder="Tahun lulus" oninput="tunda()"><select id="st" onchange="cari()"><option value="">Semua status</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select></div>
+<div class="fr"><button class="p" onclick="formL()">+ Tambah lulusan</button><button onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"></div></div>
+<div class="cnt" id="cnt"></div><div id="rows"></div></section>
+<section id="t2" hidden><div class="mc up"><div class="leg" id="leg" style="margin:0 0 8px"></div><div class="stok" id="stok"></div>
+<div class="fr srch"><select id="bs" onchange="blanko()"><option value="">Semua status</option><option>tersedia</option><option>terpakai</option><option>rusak</option><option>hilang</option><option>dikembalikan</option></select><button class="p adm" onclick="$('#dt').showModal()">+ Tambah stok</button></div></div>
+<div id="brows"></div></section>
+<section id="t3" hidden><div class="mc up"><div class="bar"><select id="lj"><option value="induk">Buku induk lulusan</option><option value="rekap">Rekap penggunaan blanko</option><option value="terima">Berita acara serah terima ijazah</option><option value="musnah">Berita acara pemusnahan blanko rusak</option></select>
 <input id="lt" type="number" placeholder="Tahun lulus" style="width:120px"><select id="lp"><option value="">Semua jenjang</option><option>Paket A</option><option>Paket B</option><option>Paket C</option></select>
 <label class="mut">Diambil dari <input id="ld" type="date"></label><label class="mut">sampai <input id="ls" type="date"></label>
 <button class="p" onclick="laporan()">Tampilkan</button><button onclick="bukaI()">Identitas lembaga</button></div>
-<div class="bar"><button onclick="word()">Unduh Word</button><button onclick="pdf()">Cetak atau simpan PDF</button></div>
-<div class="w" style="padding:20px"><div id="pv"><p class="mut">Pilih jenis laporan, lalu tekan Tampilkan. Isi Identitas lembaga dulu agar kop dan tanda tangan terisi.</p></div></div></section>
-</main></div>
+<div class="bar" style="margin:0"><button onclick="word()">Unduh Word</button><button onclick="pdf()">Cetak atau simpan PDF</button></div></div>
+<div class="w" style="padding:20px;margin:0 16px"><div id="pv"><p class="mut">Pilih jenis laporan, lalu tekan Tampilkan. Isi Identitas lembaga dulu agar kop dan tanda tangan terisi.</p></div></div></section>
+</main><nav class="bn bna"><button id="n0" class="on" onclick="tab(0);scrollTo(0,0)"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</button><button id="n1" onclick="tab(1);scrollTo(0,0)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Lulusan</button><button id="n2" onclick="tab(2);scrollTo(0,0)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Blanko</button><button id="n3" onclick="tab(3);scrollTo(0,0)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Laporan</button></nav></div>
 <dialog id="df"><form method="dialog" onsubmit="return simpan(event)"><div class="g" id="fl"></div><div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" class="adm" id="hp" onclick="hapus()">Hapus</button><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
 <dialog id="dt"><form method="dialog" onsubmit="return tambah(event)"><div class="g"><label>Awalan nomor seri<input name="awalan" placeholder="DN-"></label><label>Panjang angka<input name="panjang" type="number" value="6"></label><label>Dari nomor<input name="dari" type="number" required></label><label>Sampai nomor<input name="sampai" type="number" required></label></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Tambah stok</button></div></form></dialog>
@@ -98,13 +132,36 @@ const nv=[['b','Beranda'],['d','Data Diri'],['i','Ijazah']].map(([k,t])=>`<butto
 $('#my').innerHTML=`<div class="myh"><div class="mytop"><span>Data Lulusan</span><button onclick="keluar()">Keluar</button></div><div class="who"><div class="av">${E(ini(r.nama))}</div><div><small>Selamat datang,</small><h2>${E(r.nama)}</h2><small>NISN ${E(r.nisn)||'-'}</small></div></div></div>${b}<nav class="bn">${nv}</nav>`}
 function keluar(){localStorage.removeItem('t');localStorage.removeItem('r');T=null;location.reload()}
 function mulai(){if(!T)return;$('#login').hidden=true;$('#app').hidden=false;if(R=='siswa'){$('#app').hidden=true;$('#my').hidden=false;return saya()}
-if(R!='admin')document.querySelectorAll('.adm').forEach(e=>e.hidden=true);const th=localStorage.th||'';$('#th').value=th;$('#lt').value=th;cari()}
-function tab(n){[1,2,3].forEach(i=>{$('#t'+i).hidden=i!=n;$('#n'+i).classList.toggle('on',i==n)});n==1?cari():n==2?blanko():0}
+if(R!='admin')document.querySelectorAll('.adm').forEach(e=>e.hidden=true);const th=localStorage.th||'';$('#th').value=th;$('#lt').value=th;DY=th;tab(0)}
+function tab(n){[0,1,2,3].forEach(i=>{$('#t'+i).hidden=i!=n;$('#n'+i).classList.toggle('on',i==n)});n==0?dash():n==1?cari():n==2?blanko():0}
 function tunda(){clearTimeout(tm);tm=setTimeout(cari,300)}
-async function cari(){D=await api('lulusan?'+new URLSearchParams({q:$('#q').value,tahun:$('#th').value,status:$('#st').value}));
-$('#rows').innerHTML=D.map((r,i)=>`<tr><td>${E(r.nama)}</td><td>${E(r.nisn)}</td><td>${E(r.jenjang)} ${E(r.jurusan)}</td><td>${E(r.tahun_lulus)}</td><td>${E(r.no_ijazah)}</td>
-<td>${r.no_seri?E(r.no_seri):`<button class="s" onclick="pakai(${r.id})">Pakai blanko</button>`}</td><td><span class="tag">${E(r.status)}</span></td><td><button class="s" onclick="form(${i})">Ubah</button></td></tr>`).join('')||'<tr><td colspan=8 class="mut">Belum ada data. Tambah lulusan atau impor CSV.</td></tr>'}
-function form(i){const r=i==null?{status:'lulus'}:D[i];$('#fl').innerHTML=FL.map(([k,l,t])=>{const v=E((r[k]||'').toString().slice(0,t=='date'?10:99));
+let DY='';
+function chip(v){document.querySelectorAll('#jc button').forEach(b=>b.classList.toggle('on',(b.textContent=='Semua'?'':b.textContent)==v))}
+function kej(v){J=v;chip(v);$('#st').value='';$('#q').value='';$('#th').value=DY;tab(1)}
+function kes(v){J='';chip('');$('#st').value=v;$('#q').value='';$('#th').value=DY;tab(1)}
+function keb(v){$('#bs').value=v;tab(2)}
+function ke3(j){tab(3);$('#lj').value=j;$('#lt').value=DY;laporan()}
+async function dash(){const[A,B]=await Promise.all([api('lulusan?semua=1'),api('blanko')]);
+const th=[...new Set(A.map(r=>r.tahun_lulus).filter(Boolean))].sort((a,b)=>b-a);
+$('#dy').innerHTML='<option value="">Semua tahun</option>'+th.map(y=>`<option ${y==DY?'selected':''}>${y}</option>`).join('');
+const L=DY?A.filter(r=>r.tahun_lulus==DY):A;$('#d-tot').textContent=L.length;
+const W={'Paket A':['#ccfbf1','#0f766e'],'Paket B':['#ffedd5','#c2410c'],'Paket C':['#dbeafe','#1d4ed8']};
+$('#d-j').innerHTML=Object.keys(W).map(k=>`<button style="background:${W[k][0]};color:${W[k][1]}" onclick="kej('${k}')"><b>${L.filter(r=>r.jenjang==k).length}</b><small>${k}</small></button>`).join('');
+const ST=[['lulus','#6366f1'],['ijazah tercetak','#f59e0b'],['sudah diambil','#16a34a'],['duplikat','#dc2626']],mx=L.length||1;
+$('#d-s').innerHTML=ST.map(([k,c])=>{const n=L.filter(r=>r.status==k).length;return `<button class="bar2" onclick="kes('${k}')"><span>${k}</span><em><i style="width:${n/mx*100}%;background:${c}"></i></em><b>${n}</b></button>`}).join('');
+const rg=B.ringkas,tot=Object.values(rg).reduce((a,b)=>a+b,0)||1,tsd=rg.tersedia||0,belum=L.filter(r=>!r.no_seri).length;
+$('#d-b').innerHTML=Object.keys(WR).map(k=>`<button class="bar2" onclick="keb('${k}')"><span>${k}</span><em><i style="width:${(rg[k]||0)/tot*100}%;background:${WR[k]}"></i></em><b>${rg[k]||0}</b></button>`).join('')
++`<div class="warn ${belum==0?'ok':belum>tsd?'bad':''}">${belum==0?'Semua lulusan sudah memegang blanko.':belum+' lulusan belum memegang blanko, stok tersedia '+tsd+(belum>tsd?' (kurang '+(belum-tsd)+')':'')+'.'}</div>`}
+let J='';
+const sk=x=>({lulus:'s-lulus','ijazah tercetak':'s-tercetak','sudah diambil':'s-diambil',duplikat:'s-duplikat'}[x]||'');
+function jen(v,el){J=v;document.querySelectorAll('#jc button').forEach(x=>x.classList.toggle('on',x==el));cari()}
+async function cari(){D=await api('lulusan?'+new URLSearchParams({q:$('#q').value,tahun:$('#th').value,status:$('#st').value,jenjang:J}));
+$('#cnt').textContent=D.length+' lulusan'+(J?' · '+J:'');
+$('#rows').innerHTML=D.map((r,i)=>`<div class="lc"><div class="lav j${E((r.jenjang||'').slice(-1))}">${E(ini(r.nama))}</div><div class="lb"><b>${E(r.nama)}</b><small>NISN ${E(r.nisn)||'-'}</small>
+<div class="tg"><span class="tag j${E((r.jenjang||'').slice(-1))}">${E([r.jenjang,r.jurusan].filter(Boolean).join(' '))||'-'}</span><span class="tag">${E(r.tahun_lulus)||'-'}</span><span class="tag ${sk(r.status)}">${E(r.status)}</span></div>
+<small>No. ijazah: ${E(r.no_ijazah)||'-'}</small>
+<div class="ac">${r.no_seri?`<span class="tag terpakai">Blanko ${E(r.no_seri)}</span>`:`<button class="p" onclick="pakai(${r.id})">Pakai blanko</button>`}<button onclick="formL(${i})">Ubah</button></div></div></div>`).join('')||'<div class="kosong">Belum ada data. Tambah lulusan atau impor CSV.</div>'}
+function formL(i){const r=i==null?{status:'lulus'}:D[i];$('#fl').innerHTML=FL.map(([k,l,t])=>{const v=E((r[k]||'').toString().slice(0,t=='date'?10:99));
 return t&&t.startsWith('sel')?`<label>${l}<select name="${k}">${t.slice(4).split(',').map(o=>`<option ${o==r[k]?'selected':''}>${o}</option>`).join('')}</select></label>`:`<label>${l}<input name="${k}" type="${t||'text'}" value="${v}" ${k=='nama'?'required':''}></label>`}).join('')+`<input type="hidden" name="id" value="${r.id||''}">`;
 $('#hp').hidden=!r.id||R!='admin';$('#df').showModal()}
 async function simpan(e){const o=Object.fromEntries(new FormData(e.target));await api('lulusan',o);$('#df').close();cari();return false}
@@ -116,8 +173,9 @@ const WR={tersedia:'#0f766e',terpakai:'#2563eb',rusak:'#b91c1c',hilang:'#7f1d1d'
 async function blanko(){const d=await api('blanko?status='+$('#bs').value),tot=Object.values(d.ringkas).reduce((a,b)=>a+b,0)||1;
 $('#leg').innerHTML=Object.keys(WR).map(k=>`<div><b style="color:${WR[k]}">${d.ringkas[k]||0}</b><br>${k}</div>`).join('');
 $('#stok').innerHTML=Object.keys(WR).map(k=>`<i title="${k}" style="background:${WR[k]};width:${(d.ringkas[k]||0)/tot*100}%"></i>`).join('');
-$('#brows').innerHTML=d.data.map(b=>`<tr><td>${E(b.no_seri)}</td><td><span class="tag ${b.status}">${b.status}</span></td><td>${E(b.nama)} ${b.nisn?'('+E(b.nisn)+')':''}</td><td>${E(b.keterangan)}</td>
-<td><button class="s" onclick="riwayat(${b.id})">Riwayat</button> ${R=='admin'&&['tersedia','terpakai'].includes(b.status)?`<button class="s" onclick="ubah(${b.id},'rusak')">Rusak</button>`:''}${R=='admin'&&b.status=='tersedia'?` <button class="s" onclick="ubah(${b.id},'hilang')">Hilang</button> <button class="s" onclick="ubah(${b.id},'dikembalikan')">Dikembalikan</button>`:''}</td></tr>`).join('')||'<tr><td colspan=5 class="mut">Belum ada blanko. Tambah stok dengan rentang nomor seri.</td></tr>'}
+$('#brows').innerHTML=d.data.map(b=>`<div class="lc"><div class="lb"><div class="hd"><b>${E(b.no_seri)}</b><span class="tag ${b.status}">${b.status}</span></div>
+<small>${b.nama?'Pemegang: '+E(b.nama)+(b.nisn?' ('+E(b.nisn)+')':''):'Belum dipakai'}</small>${b.keterangan?`<small>${E(b.keterangan)}</small>`:''}
+<div class="ac"><button onclick="riwayat(${b.id})">Riwayat</button>${R=='admin'&&['tersedia','terpakai'].includes(b.status)?`<button onclick="ubah(${b.id},'rusak')">Rusak</button>`:''}${R=='admin'&&b.status=='tersedia'?`<button onclick="ubah(${b.id},'hilang')">Hilang</button><button onclick="ubah(${b.id},'dikembalikan')">Dikembalikan</button>`:''}</div></div></div>`).join('')||'<div class="kosong">Belum ada blanko. Tambah stok dengan rentang nomor seri.</div>'}
 async function ubah(id,s){const k=s=='dikembalikan'?'':prompt('Alasan blanko '+s+':');if(k===null)return;await api('blanko',{aksi:'status',blanko_id:id,status:s,keterangan:k});blanko()}
 async function riwayat(id){const l=await api('blanko?log='+id);alert(l.map(x=>new Date(x.waktu).toLocaleString('id-ID')+'  '+x.aksi+'  '+(x.detail||'')+' ('+x.oleh+')').join('\n'))}
 async function tambah(e){await api('blanko',{aksi:'tambah',...Object.fromEntries(new FormData(e.target))});$('#dt').close();blanko();return false}
