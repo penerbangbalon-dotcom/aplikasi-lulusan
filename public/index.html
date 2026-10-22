@@ -1,0 +1,114 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Lulusan dan Kendali Blanko</title>
+<style>
+:root{--ink:#14213d;--bg:#eef1f4;--line:#cfd6de;--ok:#0f766e;--warn:#b45309;--bad:#b91c1c;--mut:#5b6677;font-family:"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}
+header{background:var(--ink);color:#fff;padding:12px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header h1{font-size:17px;margin:0 auto 0 0}nav button{background:none;color:#cfd8e8;border:0;padding:8px 12px;font:inherit;cursor:pointer;border-bottom:2px solid transparent}
+nav button.on{color:#fff;border-color:#5eead4}main{padding:16px;max-width:1150px;margin:auto}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}input,select,button,textarea{font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+button{cursor:pointer}button.p{background:var(--ink);color:#fff;border-color:var(--ink)}button.s{padding:3px 8px;font-size:13px}
+.w{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:8px}table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #e6eaef;white-space:nowrap}th{color:var(--mut);font-weight:600}
+.tag{padding:2px 8px;border-radius:99px;font-size:12px;background:#e6eaef}.tersedia{background:#ccfbf1}.terpakai{background:#dbeafe}.rusak,.hilang{background:#fee2e2}.dikembalikan{background:#fef3c7}
+.stok{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:8px 0}.stok i{display:block;min-width:2px}
+.leg{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin-bottom:12px}.leg b{font-size:20px}
+dialog{border:1px solid var(--line);border-radius:10px;padding:18px;max-width:560px;width:94%}
+dialog label{display:block;font-size:13px;color:var(--mut)}dialog input,dialog select,dialog textarea{width:100%;margin-top:2px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}#login{max-width:320px;margin:15vh auto;padding:20px;background:#fff;border-radius:10px;display:grid;gap:10px}
+.mut{color:var(--mut)}:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+#pv{max-width:100%;overflow-x:auto;font-family:"Times New Roman",serif;color:#000}#pv table{border-collapse:collapse;width:100%;margin:10px 0}#pv th,#pv td{border:1px solid #333;padding:3px 6px;font-size:13px;white-space:normal;vertical-align:top}#pv .nb td{border:0}
+</style></head><body>
+<div id="login"><h2 style="margin:0">Masuk</h2>
+<div class="bar" style="margin:0"><button id="pa" class="p" onclick="peran('admin')">Admin</button><button id="ps" onclick="peran('siswa')">Siswa</button></div>
+<label class="mut">Tahun lulusan<select id="lth" style="width:100%"><option value="">Semua tahun</option></select></label>
+<input id="ln" placeholder="Nama lengkap" hidden autocomplete="off">
+<input id="pw" type="password" placeholder="Kata sandi" autocomplete="current-password">
+<small id="hint" class="mut" hidden>Kata sandi siswa adalah tanggal lahir, contoh 17082008.</small>
+<button class="p" onclick="masuk()">Masuk</button></div>
+<div id="app" hidden>
+<header><h1>Data Lulusan dan Kendali Blanko</h1><nav><button id="n1" class="on" onclick="tab(1)">Lulusan</button><button id="n2" onclick="tab(2)">Blanko ijazah</button><button id="n3" onclick="tab(3)">Laporan</button></nav><button class="s" onclick="keluar()">Keluar</button></header>
+<main>
+<section id="ts" hidden><div class="w" style="padding:20px;max-width:560px"><h2 id="sn" style="margin-top:0"></h2><div id="sd"></div></div></section>
+<section id="t1"><div class="bar"><input id="q" placeholder="Cari nama, NISN, NIK, no. ijazah, no. seri blanko" style="flex:1;min-width:220px" oninput="tunda()">
+<input id="th" type="number" placeholder="Tahun lulus" style="width:120px" oninput="tunda()"><select id="st" onchange="cari()"><option value="">Semua status</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select>
+<button class="p" onclick="form()">Tambah lulusan</button><button onclick="$('#csv').click()">Impor CSV</button><input id="csv" type="file" accept=".csv" hidden onchange="impor(this)"></div>
+<div class="w"><table><thead><tr><th>Nama</th><th>NISN</th><th>Jenjang</th><th>Lulus</th><th>No. ijazah</th><th>Blanko</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section id="t2" hidden><div class="leg" id="leg"></div><div class="stok" id="stok"></div>
+<div class="bar"><select id="bs" onchange="blanko()"><option value="">Semua status</option><option>tersedia</option><option>terpakai</option><option>rusak</option><option>hilang</option><option>dikembalikan</option></select><button class="p adm" onclick="$('#dt').showModal()">Tambah stok blanko</button></div>
+<div class="w"><table><thead><tr><th>No. seri</th><th>Status</th><th>Pemegang</th><th>Keterangan</th><th></th></tr></thead><tbody id="brows"></tbody></table></div></section>
+<section id="t3" hidden><div class="bar"><select id="lj"><option value="induk">Buku induk lulusan</option><option value="rekap">Rekap penggunaan blanko</option><option value="terima">Berita acara serah terima ijazah</option><option value="musnah">Berita acara pemusnahan blanko rusak</option></select>
+<input id="lt" type="number" placeholder="Tahun lulus" style="width:120px"><select id="lp"><option value="">Semua jenjang</option><option>Paket A</option><option>Paket B</option><option>Paket C</option></select>
+<label class="mut">Diambil dari <input id="ld" type="date"></label><label class="mut">sampai <input id="ls" type="date"></label>
+<button class="p" onclick="laporan()">Tampilkan</button><button onclick="bukaI()">Identitas lembaga</button></div>
+<div class="bar"><button onclick="word()">Unduh Word</button><button onclick="pdf()">Cetak atau simpan PDF</button></div>
+<div class="w" style="padding:20px"><div id="pv"><p class="mut">Pilih jenis laporan, lalu tekan Tampilkan. Isi Identitas lembaga dulu agar kop dan tanda tangan terisi.</p></div></div></section>
+</main></div>
+<dialog id="df"><form method="dialog" onsubmit="return simpan(event)"><div class="g" id="fl"></div><div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" class="adm" id="hp" onclick="hapus()">Hapus</button><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
+<dialog id="dt"><form method="dialog" onsubmit="return tambah(event)"><div class="g"><label>Awalan nomor seri<input name="awalan" placeholder="DN-"></label><label>Panjang angka<input name="panjang" type="number" value="6"></label><label>Dari nomor<input name="dari" type="number" required></label><label>Sampai nomor<input name="sampai" type="number" required></label></div>
+<div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Tambah stok</button></div></form></dialog>
+<dialog id="di"><form method="dialog" onsubmit="return simpanI(event)"><div class="g"><label>Nama lembaga<input name="nama"></label><label>Kota (untuk tanggal surat)<input name="kota"></label><label style="grid-column:1/3">Alamat<input name="alamat"></label><label>Nama kepala<input name="kepala"></label><label>Nama petugas blanko<input name="petugas"></label></div>
+<div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let T=localStorage.t,R=localStorage.r,D=[],tm;
+const FL=[['nama','Nama lengkap'],['nisn','NISN'],['nik','NIK'],['tempat_lahir','Tempat lahir'],['tgl_lahir','Tanggal lahir','date'],['ortu','Nama orang tua'],['jenjang','Jenjang','sel:Paket A,Paket B,Paket C'],['jurusan','Jurusan','sel:,IPA,IPS'],['tahun_lulus','Tahun lulus','number'],['no_ijazah','Nomor ijazah'],['tgl_terbit','Tanggal terbit','date'],['tgl_diambil','Tanggal diambil','date'],['penerima','Nama penerima'],['status','Status','sel:lulus,ijazah tercetak,sudah diambil,duplikat'],['catatan','Catatan']];
+async function api(p,b,m){const r=await fetch('/api/'+p,{method:m||(b?'POST':'GET'),headers:{'Content-Type':'application/json',Authorization:'Bearer '+T},body:b?JSON.stringify(b):undefined});const d=await r.json().catch(()=>({}));if(r.status==401&&T){keluar();throw d}if(!r.ok){alert(d.error||'Gagal');throw d}return d}
+let P='admin';
+function peran(p){P=p;$('#ln').hidden=$('#hint').hidden=p!='siswa';$('#pw').placeholder=p=='siswa'?'Tanggal lahir (DDMMYYYY)':'Kata sandi';$('#pa').classList.toggle('p',p=='admin');$('#ps').classList.toggle('p',p=='siswa')}
+fetch('/api/login').then(r=>r.json()).then(a=>{$('#lth').innerHTML+=a.map(y=>`<option>${y}</option>`).join('')}).catch(()=>{});
+async function masuk(){const th=$('#lth').value;if(P=='siswa'&&(!th||!$('#ln').value.trim()))return alert('Pilih tahun lulusan dan isi nama lengkap');
+const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({peran:P,password:$('#pw').value,nama:$('#ln').value,tahun:th})}),d=await r.json();if(!r.ok)return alert(d.error);T=localStorage.t=d.token;R=localStorage.r=d.role;localStorage.th=th;mulai()}
+async function saya(){const r=await api('saya');$('#sn').textContent=r.nama||'';const L=[['NISN',r.nisn],['Tempat, tanggal lahir',[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', ')],['Nama orang tua',r.ortu],['Jenjang',[r.jenjang,r.jurusan].filter(Boolean).join(' ')],['Tahun lulus',r.tahun_lulus],['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Status ijazah',r.status]];
+$('#sd').innerHTML='<table>'+L.map(x=>`<tr><th>${x[0]}</th><td>${E(x[1])||'-'}</td></tr>`).join('')+'</table>'}
+function keluar(){localStorage.removeItem('t');localStorage.removeItem('r');T=null;location.reload()}
+function mulai(){if(!T)return;$('#login').hidden=true;$('#app').hidden=false;if(R=='siswa'){document.querySelector('nav').hidden=true;$('#t1').hidden=true;$('#ts').hidden=false;return saya()}
+if(R!='admin')document.querySelectorAll('.adm').forEach(e=>e.hidden=true);const th=localStorage.th||'';$('#th').value=th;$('#lt').value=th;cari()}
+function tab(n){[1,2,3].forEach(i=>{$('#t'+i).hidden=i!=n;$('#n'+i).classList.toggle('on',i==n)});n==1?cari():n==2?blanko():0}
+function tunda(){clearTimeout(tm);tm=setTimeout(cari,300)}
+async function cari(){D=await api('lulusan?'+new URLSearchParams({q:$('#q').value,tahun:$('#th').value,status:$('#st').value}));
+$('#rows').innerHTML=D.map((r,i)=>`<tr><td>${E(r.nama)}</td><td>${E(r.nisn)}</td><td>${E(r.jenjang)} ${E(r.jurusan)}</td><td>${E(r.tahun_lulus)}</td><td>${E(r.no_ijazah)}</td>
+<td>${r.no_seri?E(r.no_seri):`<button class="s" onclick="pakai(${r.id})">Pakai blanko</button>`}</td><td><span class="tag">${E(r.status)}</span></td><td><button class="s" onclick="form(${i})">Ubah</button></td></tr>`).join('')||'<tr><td colspan=8 class="mut">Belum ada data. Tambah lulusan atau impor CSV.</td></tr>'}
+function form(i){const r=i==null?{status:'lulus'}:D[i];$('#fl').innerHTML=FL.map(([k,l,t])=>{const v=E((r[k]||'').toString().slice(0,t=='date'?10:99));
+return t&&t.startsWith('sel')?`<label>${l}<select name="${k}">${t.slice(4).split(',').map(o=>`<option ${o==r[k]?'selected':''}>${o}</option>`).join('')}</select></label>`:`<label>${l}<input name="${k}" type="${t||'text'}" value="${v}" ${k=='nama'?'required':''}></label>`}).join('')+`<input type="hidden" name="id" value="${r.id||''}">`;
+$('#hp').hidden=!r.id||R!='admin';$('#df').showModal()}
+async function simpan(e){const o=Object.fromEntries(new FormData(e.target));await api('lulusan',o);$('#df').close();cari();return false}
+async function hapus(){const id=$('#fl [name=id]').value;if(!confirm('Hapus data lulusan ini?'))return;await api('lulusan?id='+id,null,'DELETE');$('#df').close();cari()}
+async function pakai(id){if(!confirm('Ambil blanko tersedia berikutnya untuk lulusan ini?'))return;await api('blanko',{aksi:'pakai',lulusan_id:id});cari()}
+async function impor(el){const t=await el.files[0].text(),ls=t.trim().split(/\r?\n/),s=ls[0].includes(';')?';':',',h=ls.shift().split(s).map(x=>x.trim());
+const a=ls.map(l=>Object.fromEntries(l.split(s).map((v,i)=>[h[i],v.trim()])));const d=await api('lulusan',a);alert(d.masuk+' data masuk, '+d.dilewati+' dilewati (kosong atau NISN sudah ada)');el.value='';cari()}
+const WR={tersedia:'#0f766e',terpakai:'#2563eb',rusak:'#b91c1c',hilang:'#7f1d1d',dikembalikan:'#b45309'};
+async function blanko(){const d=await api('blanko?status='+$('#bs').value),tot=Object.values(d.ringkas).reduce((a,b)=>a+b,0)||1;
+$('#leg').innerHTML=Object.keys(WR).map(k=>`<div><b style="color:${WR[k]}">${d.ringkas[k]||0}</b><br>${k}</div>`).join('');
+$('#stok').innerHTML=Object.keys(WR).map(k=>`<i title="${k}" style="background:${WR[k]};width:${(d.ringkas[k]||0)/tot*100}%"></i>`).join('');
+$('#brows').innerHTML=d.data.map(b=>`<tr><td>${E(b.no_seri)}</td><td><span class="tag ${b.status}">${b.status}</span></td><td>${E(b.nama)} ${b.nisn?'('+E(b.nisn)+')':''}</td><td>${E(b.keterangan)}</td>
+<td><button class="s" onclick="riwayat(${b.id})">Riwayat</button> ${R=='admin'&&['tersedia','terpakai'].includes(b.status)?`<button class="s" onclick="ubah(${b.id},'rusak')">Rusak</button>`:''}${R=='admin'&&b.status=='tersedia'?` <button class="s" onclick="ubah(${b.id},'hilang')">Hilang</button> <button class="s" onclick="ubah(${b.id},'dikembalikan')">Dikembalikan</button>`:''}</td></tr>`).join('')||'<tr><td colspan=5 class="mut">Belum ada blanko. Tambah stok dengan rentang nomor seri.</td></tr>'}
+async function ubah(id,s){const k=s=='dikembalikan'?'':prompt('Alasan blanko '+s+':');if(k===null)return;await api('blanko',{aksi:'status',blanko_id:id,status:s,keterangan:k});blanko()}
+async function riwayat(id){const l=await api('blanko?log='+id);alert(l.map(x=>new Date(x.waktu).toLocaleString('id-ID')+'  '+x.aksi+'  '+(x.detail||'')+' ('+x.oleh+')').join('\n'))}
+async function tambah(e){await api('blanko',{aksi:'tambah',...Object.fromEntries(new FormData(e.target))});$('#dt').close();blanko();return false}
+
+const I=JSON.parse(localStorage.i||'{}');let O='portrait';
+const tg=d=>d?new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'';
+function bukaI(){document.querySelectorAll('#di [name]').forEach(e=>e.value=I[e.name]||'');$('#di').showModal()}
+function simpanI(e){const o=Object.fromEntries(new FormData(e.target));localStorage.i=JSON.stringify(o);Object.assign(I,o);$('#di').close();return false}
+const kop=()=>`<div style="text-align:center"><b style="font-size:15pt">${E(I.nama||'NAMA LEMBAGA')}</b><br>${E(I.alamat||'')}</div><hr>`;
+const jd=t=>`<h3 style="text-align:center;margin:8px 0">${t}</h3>`;
+const tb=(h,rows)=>`<table><tr><th>No</th>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr><td>${i+1}</td>${r.map(c=>`<td>${E(c)}</td>`).join('')}</tr>`).join('')}</table>`;
+const ttd=(...p)=>`<p style="text-align:right">${E(I.kota||'................')}, ${tg(new Date())}</p><table class="nb"><tr>${p.map(x=>`<td style="text-align:center;width:${100/p.length}%">${x[0]}<br><br><br><br><u>${E(x[1]||'................')}</u></td>`).join('')}</tr></table>`;
+const dd=x=>String(x||'').slice(0,10);
+async function laporan(){const j=$('#lj').value,P=$('#lp').value,d=$('#ld').value,s=$('#ls').value,th=$('#lt').value;let h=kop();O=j=='induk'?'landscape':'portrait';
+if(j=='induk'||j=='terima'){let L=(await api('lulusan?semua=1&tahun='+th)).filter(r=>!P||r.jenjang==P);
+ if(j=='induk')h+=jd('BUKU INDUK LULUSAN'+(th?' TAHUN '+th:''))+tb(['Nama','NISN','Tempat, tgl lahir','Orang tua','Jenjang','Tahun','No. ijazah','No. seri blanko','Tgl terbit','Tgl diambil','Penerima'],L.map(r=>[r.nama,r.nisn,[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', '),r.ortu,(r.jenjang||'')+' '+(r.jurusan||''),r.tahun_lulus,r.no_ijazah,r.no_seri,tg(r.tgl_terbit),tg(r.tgl_diambil),r.penerima]))+ttd(['Kepala',I.kepala]);
+ else{L=L.filter(r=>r.tgl_diambil&&(!d||dd(r.tgl_diambil)>=d)&&(!s||dd(r.tgl_diambil)<=s));
+  h+=jd('BERITA ACARA SERAH TERIMA IJAZAH')+`<p>Pada tanggal ${tg(s||d||new Date())}, telah dilakukan penyerahan ijazah kepada ${L.length} lulusan ${E(I.nama||'')} dengan rincian sebagai berikut:</p>`+tb(['Nama','NISN','No. ijazah','No. seri blanko','Tgl diambil','Penerima','Tanda tangan'],L.map(r=>[r.nama,r.nisn,r.no_ijazah,r.no_seri,tg(r.tgl_diambil),r.penerima,'']))+ttd(['Yang menyerahkan',I.petugas],['Mengetahui, Kepala',I.kepala])}}
+else{const B=await api('blanko?semua=1'),R=B.ringkas,tot=Object.values(R).reduce((a,b)=>a+b,0);
+ if(j=='rekap')h+=jd('REKAPITULASI PENGGUNAAN BLANKO IJAZAH')+`<p>Per tanggal ${tg(new Date())}</p>`+tb(['Keterangan','Jumlah (lembar)'],[['Total stok diterima',tot],...['terpakai','tersedia','rusak','hilang','dikembalikan'].map(k=>[k[0].toUpperCase()+k.slice(1),R[k]||0])])
+  +'<p><b>Blanko terpakai</b></p>'+tb(['No. seri','Pemegang','NISN'],B.data.filter(b=>b.status=='terpakai').map(b=>[b.no_seri,b.nama,b.nisn]))
+  +'<p><b>Blanko rusak, hilang, dan dikembalikan</b></p>'+tb(['No. seri','Status','Alasan'],B.data.filter(b=>['rusak','hilang','dikembalikan'].includes(b.status)).map(b=>[b.no_seri,b.status,b.keterangan]))+ttd(['Petugas blanko',I.petugas],['Mengetahui, Kepala',I.kepala]);
+ else{const X=B.data.filter(b=>b.status=='rusak');h+=jd('BERITA ACARA PEMUSNAHAN BLANKO IJAZAH RUSAK')+`<p>Pada tanggal ${tg(new Date())}, bertempat di ${E(I.nama||'................')}, telah dimusnahkan blanko ijazah rusak sebanyak ${X.length} lembar dengan nomor seri berikut:</p>`+tb(['No. seri','Alasan rusak'],X.map(b=>[b.no_seri,b.keterangan]))+ttd(['Petugas blanko',I.petugas],['Saksi',''],['Mengetahui, Kepala',I.kepala])}}
+$('#pv').innerHTML=h}
+const doc=()=>`<html><head><meta charset="utf-8"><title>Laporan</title><style>@page{size:A4 ${O};margin:1.8cm}body{font:11pt "Times New Roman",serif}table{border-collapse:collapse;width:100%;margin:8px 0}th,td{border:1px solid #000;padding:3px 5px;font-size:10pt;vertical-align:top}.nb td{border:0;font-size:11pt}</style></head><body>${$('#pv').innerHTML}</body></html>`;
+function word(){if(!$('#pv table'))return alert('Tampilkan laporan dulu');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff',doc()],{type:'application/msword'}));a.download=$('#lj').selectedOptions[0].text+'.doc';a.click()}
+function pdf(){if(!$('#pv table'))return alert('Tampilkan laporan dulu');const w=open('','_blank');w.document.write(doc());w.document.close();w.focus();setTimeout(()=>w.print(),400)}
+$('#pw').addEventListener('keydown',e=>e.key=='Enter'&&masuk());mulai();
+</script></body></html>
