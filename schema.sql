@@ -3,7 +3,7 @@ create table blanko(
  status text not null default 'tersedia' check (status in ('tersedia','terpakai','rusak','hilang','dikembalikan')),
  keterangan text, diubah timestamptz default now());
 create table lulusan(
- id serial primary key, nisn text unique, nik text, nama text not null, tempat_lahir text, tgl_lahir date, ortu text,
+ id serial primary key, nis text, nisn text unique, nik text, nama text not null, tempat_lahir text, tgl_lahir date, ortu text,
  jenjang text, jurusan text, tahun_lulus int, no_ijazah text unique,
  blanko_id int unique references blanko(id), tgl_terbit date, tgl_diambil date, penerima text,
  status text default 'lulus', catatan text, dibuat timestamptz default now());

@@ -1,13 +1,14 @@
 const { pool, auth, fail, err } = require('./_lib');
-const F = ['nisn','nik','nama','tempat_lahir','tgl_lahir','ortu','jenjang','jurusan','tahun_lulus','no_ijazah','tgl_terbit','tgl_diambil','penerima','status','catatan'];
-const clean = o => F.map(k => (o[k] === '' || o[k] === undefined ? null : o[k]));
+const F = ['nis','nisn','nik','nama','tempat_lahir','tgl_lahir','ortu','jenjang','jurusan','tahun_lulus','no_ijazah','tgl_terbit','tgl_diambil','penerima','status','catatan'];
+// kolom NIPD (istilah Dapodik) dianggap sama dengan NIS
+const clean = o => F.map(k => { let v = o[k]; if (k === 'nis' && (v === undefined || v === '')) v = o.nipd; return v === '' || v === undefined ? null : v; });
 module.exports = async (req, res) => {
   const u = await auth(req, res, req.method === 'GET' ? 'lulusan.lihat' : req.method === 'DELETE' ? 'lulusan.hapus' : 'lulusan.ubah'); if (!u) return;
   try {
     if (req.method === 'GET') {
       const { q = '', tahun = '', status = '', jenjang = '', jurusan = '', blanko = '' } = req.query, like = '%' + q + '%';
       const r = await pool.query(`select l.*, b.no_seri from lulusan l left join blanko b on b.id=l.blanko_id
-        where ($1='' or l.nama ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2 or l.tempat_lahir ilike $2 or l.ortu ilike $2 or l.penerima ilike $2)
+        where ($1='' or l.nama ilike $2 or l.nis ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2 or l.tempat_lahir ilike $2 or l.ortu ilike $2 or l.penerima ilike $2)
         and ($3='' or l.tahun_lulus::text=$3) and ($4='' or l.status=$4) and ($5='' or l.jenjang=$5) and ($6='' or l.jurusan=$6) and ($7='' or ($7='ada' and l.blanko_id is not null) or ($7='belum' and l.blanko_id is null)) order by l.tahun_lulus desc, l.nama limit ${req.query.semua ? 5000 : 300}`, [q, like, tahun, status, jenjang, jurusan, blanko]);
       return res.json(r.rows);
     }

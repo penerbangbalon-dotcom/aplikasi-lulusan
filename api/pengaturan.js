@@ -5,6 +5,7 @@ const KUNCI = ['identitas', 'logo'];
 module.exports = async (req, res) => {
   try {
     if (req.method === 'GET') {
+      res.setHeader('Cache-Control', 'no-store');
       const t = (req.headers.authorization || '').split('.')[0].replace('Bearer ', '');
       if (t === 'siswa') { if (!authSiswa(req, res)) return; } else if (!(await auth(req, res))) return;
       const r = await pool.query('select kunci,nilai from pengaturan where kunci=any($1)', [KUNCI]);

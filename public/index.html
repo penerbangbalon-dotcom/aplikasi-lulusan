@@ -265,7 +265,7 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <div class="dc"><h3>Status Ijazah</h3><div id="d-s"></div></div>
 <div class="dc"><h3>Stok Blanko</h3><div id="d-b"></div></div>
 </div></section>
-<section id="t1" hidden><div class="mc up srch"><input id="q" placeholder="Cari nama, NISN, NIK, tempat lahir, orang tua, no. ijazah, no. seri blanko" oninput="tunda()" onkeydown="if(event.key=='Enter')cari()">
+<section id="t1" hidden><div class="mc up srch"><input id="q" placeholder="Cari nama, NIS, NISN, NIK, tempat lahir, orang tua, no. ijazah, no. seri blanko" oninput="tunda()" onkeydown="if(event.key=='Enter')cari()">
 <div class="chips" id="jc"><button class="on" onclick="jen('',this)">Semua</button><button onclick="jen('Paket A',this)">Paket A</button><button onclick="jen('Paket B',this)">Paket B</button><button onclick="jen('Paket C',this)">Paket C</button></div>
 <div class="fr"><select id="th" onchange="cari()"><option value="">Semua tahun lulus</option></select><select id="st" onchange="cari()"><option value="">Semua status ijazah</option><option>lulus</option><option>ijazah tercetak</option><option>sudah diambil</option><option>duplikat</option></select></div>
 <div class="fr"><select id="jr" onchange="cari()"><option value="">Semua jurusan</option><option>IPA</option><option>IPS</option></select><select id="bk" onchange="cari()"><option value="">Semua (blanko)</option><option value="ada">Sudah memegang blanko</option><option value="belum">Belum memegang blanko</option></select></div>
@@ -308,7 +308,7 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let T=localStorage.t,R=localStorage.r,D=[],tm,ME={izin:[]},LG='',CUR=null,CI=null;
 const can=k=>ME.izin.includes(k);
-const FL=[['nama','Nama lengkap'],['nisn','NISN'],['nik','NIK'],['tempat_lahir','Tempat lahir'],['tgl_lahir','Tanggal lahir','date'],['ortu','Nama orang tua'],['jenjang','Jenjang','sel:Paket A,Paket B,Paket C'],['jurusan','Jurusan','sel:,IPA,IPS'],['tahun_lulus','Tahun lulus','number'],['no_ijazah','Nomor ijazah'],['tgl_terbit','Tanggal terbit','date'],['tgl_diambil','Tanggal diambil','date'],['penerima','Nama penerima'],['status','Status','sel:lulus,ijazah tercetak,sudah diambil,duplikat'],['catatan','Catatan']];
+const FL=[['nama','Nama lengkap'],['nis','NIS'],['nisn','NISN'],['nik','NIK'],['tempat_lahir','Tempat lahir'],['tgl_lahir','Tanggal lahir','date'],['ortu','Nama orang tua'],['jenjang','Jenjang','sel:Paket A,Paket B,Paket C'],['jurusan','Jurusan','sel:,IPA,IPS'],['tahun_lulus','Tahun lulus','number'],['no_ijazah','Nomor ijazah'],['tgl_terbit','Tanggal terbit','date'],['tgl_diambil','Tanggal diambil','date'],['penerima','Nama penerima'],['status','Status','sel:lulus,ijazah tercetak,sudah diambil,duplikat'],['catatan','Catatan']];
 async function api(p,b,m){const r=await fetch('/api/'+p,{method:m||(b?'POST':'GET'),headers:{'Content-Type':'application/json',Authorization:'Bearer '+T},body:b?JSON.stringify(b):undefined});const d=await r.json().catch(()=>({}));if(r.status==401&&T){keluar();throw d}if(!r.ok){alert(d.error||'Gagal');throw d}return d}
 let P='admin';
 function peran(p){P=p;$('#ln').hidden=$('#hint').hidden=p!='siswa';$('#lu').hidden=$('#hint2').hidden=p=='siswa';$('#pw').placeholder=p=='siswa'?'Tanggal lahir (DDMMYYYY)':'Kata sandi';$('#pa').classList.toggle('p',p=='admin');$('#ps').classList.toggle('p',p=='siswa')}
@@ -321,7 +321,7 @@ const rw=L=>L.map(x=>`<div class="rw"><span>${x[0]}</span><b>${E(x[1])||'-'}</b>
 const IK={b:'<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',d:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',i:'<svg viewBox="0 0 24 24"><path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg>'};
 function keluar(){localStorage.removeItem('t');localStorage.removeItem('r');T=null;location.reload()}
 async function mulai(){if(!T)return;$('#login').hidden=true;
-if(R=='siswa'){document.body.style.overflow='hidden';try{await muatPeng();tampil(await api('saya'))}catch(e){}return}
+if(R=='siswa'){document.body.style.overflow='hidden';try{await muatPeng();const d=await api('saya');if(d.lembaga){Object.assign(I,d.lembaga.identitas||{});if(d.lembaga.logo)LG=d.lembaga.logo;delete d.lembaga}tampil(d)}catch(e){}return}
 $('#app').hidden=false;try{ME=await api('akun')}catch(e){return}
 await muatPeng();terap();const th=localStorage.th||'';$('#lt').value=th;DY=th;try{if(localStorage.col&&!mob())$('#app').classList.add('col')}catch(e){}sapa();tab(0)}
 // tampilkan hanya menu dan tombol yang boleh dipakai peran ini (server tetap memeriksa ulang)
@@ -392,7 +392,7 @@ ${sis?'':(can('lulusan.ubah')?`<button class="ubt" onclick="tutup();formL(${CI})
 <div><div class="utb" id="utb"></div><div id="utc"></div></div></div></div>`;
 tabU(0);$('#dtl').hidden=false;$('#dtl').scrollTop=0;document.body.style.overflow='hidden'}
 function tabU(k){const r=CUR,sis=R=='siswa';$('#utb').innerHTML=TU.map((t,x)=>`<button class="${x==k?'on':''}" onclick="tabU(${x})">${t}</button>`).join('');let h='';
-if(k==0)h=`<h3 class="uh">1. Data Diri Lulusan</h3>${fd('Nomor Induk Siswa Nasional (NISN)',r.nisn)}${fd('Nomor Induk Kependudukan (NIK)',r.nik)}${fd('Tempat Lahir',(r.tempat_lahir||'').toUpperCase())}${fd('Tanggal Lahir',tgs(r.tgl_lahir))}${fd('Nama Orang Tua',r.ortu)}`;
+if(k==0)h=`<h3 class="uh">1. Data Diri Lulusan</h3>${fd('Nomor Induk Siswa (NIS)',r.nis)}${fd('Nomor Induk Siswa Nasional (NISN)',r.nisn)}${fd('Nomor Induk Kependudukan (NIK)',r.nik)}${fd('Tempat Lahir',(r.tempat_lahir||'').toUpperCase())}${fd('Tanggal Lahir',tgs(r.tgl_lahir))}${fd('Nama Orang Tua',r.ortu)}`;
 else if(k==1)h=`<h3 class="uh">1. Data Ijazah</h3>${fd('Nomor Ijazah',r.no_ijazah)}${fd('Nomor Seri Blanko',r.no_seri)}<h3 class="uh">2. Penyerahan Ijazah</h3><div class="f2">${fd('Tanggal Terbit',tgs(r.tgl_terbit))}${fd('Tanggal Diambil',tgs(r.tgl_diambil))}</div>${fd('Nama Penerima',r.penerima)}`;
 else{const lg=x=>`<div class="lg"><b>${E(x.aksi)}</b> ${E(x.detail)||''}<br><small>${new Date(x.waktu).toLocaleString('id-ID')}${x.oleh?' · '+E(x.oleh):''}</small></div>`;
 const ada=sis?(r.riwayat||[]).length:r.blanko_id;
@@ -416,8 +416,8 @@ $('#hp').hidden=!r.id||!can('lulusan.hapus');$('#df').showModal()}
 async function simpan(e){const o=Object.fromEntries(new FormData(e.target));await api('lulusan',o);$('#df').close();cari();return false}
 async function hapus(){const id=$('#fl [name=id]').value;if(!confirm('Hapus data lulusan ini?'))return;await api('lulusan?id='+id,null,'DELETE');$('#df').close();cari()}
 async function pakai(id){if(!confirm('Ambil blanko tersedia berikutnya untuk lulusan ini?'))return;await api('blanko',{aksi:'pakai',lulusan_id:id});cari()}
-async function impor(el){const t=await el.files[0].text(),ls=t.trim().split(/\r?\n/),s=ls[0].includes(';')?';':',',h=ls.shift().split(s).map(x=>x.trim());
-const a=ls.map(l=>Object.fromEntries(l.split(s).map((v,i)=>[h[i],v.trim()])));const d=await api('lulusan',a);alert(d.masuk+' data masuk, '+d.dilewati+' dilewati (kosong atau NISN sudah ada)');el.value='';cari()}
+async function impor(el){const t=await el.files[0].text(),ls=t.trim().split(/\r?\n/),s=ls[0].includes(';')?';':',',h=ls.shift().split(s).map(x=>x.trim().toLowerCase());
+const a=ls.map(l=>Object.fromEntries(l.split(s).map((v,i)=>[h[i],v.trim()])));const d=await api('lulusan',a);alert(d.masuk+' data masuk, '+d.dilewati+' dilewati (nama kosong, atau NISN/nomor ijazah sudah ada). Data lama tidak diubah.');el.value='';cari()}
 const WR={tersedia:'#0f766e',terpakai:'#2563eb',rusak:'#b91c1c',hilang:'#7f1d1d',dikembalikan:'#b45309'};
 async function blanko(){const d=await api('blanko?status='+$('#bs').value),tot=Object.values(d.ringkas).reduce((a,b)=>a+b,0)||1;
 $('#leg').innerHTML=Object.keys(WR).map(k=>`<div><b style="color:${WR[k]}">${d.ringkas[k]||0}</b><br>${k}</div>`).join('');
@@ -443,7 +443,7 @@ function kendali(L,P,th){const nm=I.nama||'NAMA LEMBAGA';
 const j1=P?`PENDIDIKAN KESETARAAN PROGRAM ${P.toUpperCase()} SETARA ${SD[P]}`:'PENDIDIKAN KESETARAAN PAKET A, PAKET B, DAN PAKET C',tp=+th?`TAHUN PELAJARAN ${th-1}/${th}`:'';
 const kv=(a,b,t)=>`<tr><td width="150" nowrap>${a}</td><td>: ${t?'<b>'+E(b)+'</b>':E(b)}</td></tr>`;
 const sat=[I.kode,nm.toUpperCase()].filter(Boolean).join(' - ');
-const rows=L.map((r,i)=>`<tr><td align="center">${i+1}</td><td>&nbsp;</td><td>${nb(r.nisn)}</td><td>&nbsp;</td><td>${nb((r.nama||'').toUpperCase())}</td><td>${nb(r.tempat_lahir)}</td><td>${nb(tgp(r.tgl_lahir))}</td><td>${nb(r.ortu)}</td><td>${nb(r.no_seri||r.no_ijazah)}</td><td align="center">${nb(r.tahun_lulus)}</td></tr>`).join('');
+const rows=L.map((r,i)=>`<tr><td align="center">${i+1}</td><td>${nb(r.nis)}</td><td>${nb(r.nisn)}</td><td>&nbsp;</td><td>${nb((r.nama||'').toUpperCase())}</td><td>${nb(r.tempat_lahir)}</td><td>${nb(tgp(r.tgl_lahir))}</td><td>${nb(r.ortu)}</td><td>${nb(r.no_seri||r.no_ijazah)}</td><td align="center">${nb(r.tahun_lulus)}</td></tr>`).join('');
 return `<div class="kbw"><p class="kt" align="center">KENDALI BLANGKO IJAZAH<br>${j1}<br>${E(nm.toUpperCase())}${tp?'<br>'+tp:''}</p>
 <table class="nb ki" border="0" cellspacing="0" cellpadding="1" width="100%">${kv('Provinsi',I.provinsi||'')}${kv('Rayon',I.rayon||'')}${kv('Satuan Pendidikan',sat,1)}</table>
 <table class="kb" border="1" cellspacing="0" cellpadding="3" width="100%"><thead><tr><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:4%">Urt</th><th bgcolor="#dbe4ff" align="center" colspan="3">Nomor</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:18%">Nama</th><th bgcolor="#dbe4ff" align="center" colspan="2" rowspan="2">Tempat, Tgl Lahir</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:12%">Nama Orang Tua</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:12%">Nomor Seri Ijazah</th><th bgcolor="#dbe4ff" align="center" rowspan="2" style="width:5%">Tahun Lulus</th></tr>
@@ -452,7 +452,7 @@ return `<div class="kbw"><p class="kt" align="center">KENDALI BLANGKO IJAZAH<br>
 async function laporan(){const j=$('#lj').value,P=$('#lp').value,d=$('#ld').value,s=$('#ls').value,th=$('#lt').value;let h=j=='kendali'?'':kop();O=j=='induk'||j=='kendali'?'landscape':'portrait';
 if(j=='kendali'){const L=(await api('lulusan?semua=1&tahun='+th)).filter(r=>!P||r.jenjang==P);h+=kendali(L,P,th)}
 else if(j=='induk'||j=='terima'){let L=(await api('lulusan?semua=1&tahun='+th)).filter(r=>!P||r.jenjang==P);
- if(j=='induk')h+=jd('BUKU INDUK LULUSAN'+(th?' TAHUN '+th:''))+tb(['Nama','NISN','Tempat, tgl lahir','Orang tua','Jenjang','Tahun','No. ijazah','No. seri blanko','Tgl terbit','Tgl diambil','Penerima'],L.map(r=>[r.nama,r.nisn,[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', '),r.ortu,(r.jenjang||'')+' '+(r.jurusan||''),r.tahun_lulus,r.no_ijazah,r.no_seri,tg(r.tgl_terbit),tg(r.tgl_diambil),r.penerima]))+ttd(['Kepala',I.kepala]);
+ if(j=='induk')h+=jd('BUKU INDUK LULUSAN'+(th?' TAHUN '+th:''))+tb(['Nama','NIS','NISN','Tempat, tgl lahir','Orang tua','Jenjang','Tahun','No. ijazah','No. seri blanko','Tgl terbit','Tgl diambil','Penerima'],L.map(r=>[r.nama,r.nis,r.nisn,[r.tempat_lahir,tg(r.tgl_lahir)].filter(Boolean).join(', '),r.ortu,(r.jenjang||'')+' '+(r.jurusan||''),r.tahun_lulus,r.no_ijazah,r.no_seri,tg(r.tgl_terbit),tg(r.tgl_diambil),r.penerima]))+ttd(['Kepala',I.kepala]);
  else{L=L.filter(r=>r.tgl_diambil&&(!d||dd(r.tgl_diambil)>=d)&&(!s||dd(r.tgl_diambil)<=s));
   h+=jd('BERITA ACARA SERAH TERIMA IJAZAH')+`<p>Pada tanggal ${tg(s||d||new Date())}, telah dilakukan penyerahan ijazah kepada ${L.length} lulusan ${E(I.nama||'')} dengan rincian sebagai berikut:</p>`+tb(['Nama','NISN','No. ijazah','No. seri blanko','Tgl diambil','Penerima','Tanda tangan'],L.map(r=>[r.nama,r.nisn,r.no_ijazah,r.no_seri,tg(r.tgl_diambil),r.penerima,'']))+ttd(['Yang menyerahkan',I.petugas],['Mengetahui, Kepala',I.kepala])}}
 else{const B=await api('blanko?semua=1'),R=B.ringkas,tot=Object.values(R).reduce((a,b)=>a+b,0);
@@ -482,10 +482,10 @@ function cetakL(fmt){if(!$('#pv table'))return alert('Tampilkan laporan dulu');k
 const kop2=()=>{let u=gl();if(u[0]=='/')u=location.origin+u;return `<table class="nb" style="margin:0"><tr><td style="width:80px"><img src="${u}" alt="" style="width:70px;height:70px;object-fit:contain"></td><td style="text-align:center"><b style="font-size:15pt">${E((I.nama||'NAMA LEMBAGA').toUpperCase())}</b><br>${E(I.alamat||'')}</td><td style="width:80px"></td></tr></table><hr style="border:0;border-top:3px double #000;margin:6px 0 10px">`};
 function lembar(r){const row=(a,b)=>`<tr><td style="width:36%;font-weight:bold">${a}</td><td>${E(b)||'-'}</td></tr>`,
 sec=(t,L)=>`<p style="margin:14px 0 4px"><b>${t}</b></p><table>${L.map(x=>row(x[0],x[1])).join('')}</table>`;
-return kop2()+jd('<u>DATA LULUSAN</u>')+sec('A. Data Diri',[['Nama lengkap',(r.nama||'').toUpperCase()],['NISN',r.nisn],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])
+return kop2()+jd('<u>DATA LULUSAN</u>')+sec('A. Data Diri',[['Nama lengkap',(r.nama||'').toUpperCase()],['NIS',r.nis],['NISN',r.nisn],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])
 +sec('B. Data Kelulusan',[['Jenjang pendidikan',r.jenjang],['Jurusan',r.jurusan],['Tahun lulus',r.tahun_lulus],['Status ijazah',r.status]])
 +sec('C. Data Ijazah',[['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima]])
-+`<p style="text-align:right;margin-top:24px;font-size:10pt">Dicetak pada ${tg(new Date())}</p>`}
++`<table class="nb" border="0" width="100%" style="margin-top:28px"><tr><td width="55%">&nbsp;</td><td style="text-align:center">${E(I.kota||'................')}, ${tg(new Date())}<br>Kepala ${E(I.nama||'')}<br><br><br><br><b><u>${E(I.kepala||'................')}</u></b></td></tr></table><p style="text-align:right;margin-top:16px;font-size:10pt">Dicetak pada ${tg(new Date())}</p>`}
 function cetak(fmt){if(!CUR)return;keluarkan(fmt,lembar(CUR),'portrait','Data Lulusan - '+(CUR.nama||''))}
 
 // ===== pengguna dan peran =====

@@ -14,3 +14,8 @@
 11. Halaman siswa kini sama dengan halaman Detail Lulusan (hanya baca). Menu Cetak tersedia di halaman siswa, detail lulusan (admin), dan Laporan: Cetak PDF (jendela cetak peramban, pilih Simpan sebagai PDF) atau Simpan JPG.
 12. Identitas lembaga dan logo kini disimpan di server (sebelumnya di peramban admin) supaya muncul juga di cetakan siswa. Data lama di peramban admin dipindahkan otomatis saat admin yang berhak mengubah lembaga masuk pertama kali.
 13. Simpan JPG memuat pustaka html2canvas 1.4.1 dari cdn.jsdelivr.net saat dipakai pertama kali, jadi perlu koneksi internet.
+
+## Versi 4.1
+14. Jalankan migrasi-v5.sql (menambah kolom NIS) SEBELUM memakai versi ini. NIS = NIPD di Dapodik. Pada impor CSV, kolom bernama nis atau nipd sama-sama masuk ke NIS.
+15. Impor tahun lain aman: data lama tidak pernah ditimpa. Baris yang NISN atau nomor ijazahnya sudah ada dilewati, bukan diperbarui. Pilihan tahun di login siswa otomatis bertambah.
+16. Cetakan siswa kini memuat nama lembaga, logo, dan tanda tangan kepala (dari Identitas lembaga). Jika masih bertuliskan NAMA LEMBAGA, buka login admin, menu Laporan, Identitas lembaga, lalu klik Simpan sekali.
