@@ -74,6 +74,23 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 .dw .who h2{font-size:20px}.dw .tg{margin-top:8px}.dw .tag{background:rgba(255,255,255,.9)}
 .ab{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:760px;background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:10px;padding:10px 16px max(10px,env(safe-area-inset-bottom))}
 .ab button{flex:1;border-radius:12px;padding:11px}.ab .p{background:#2563eb;border-color:#2563eb}
+
+#dtl{background:#f3f4f6}#dtl .dw{max-width:1100px;padding-bottom:40px;background:none}
+.ub{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:14px;background:#fff;border-bottom:1px solid #e2e5ea;padding:10px 16px;font-weight:600}
+.ub button{border:0;background:#eef2ff;color:#1d4ed8;border-radius:8px;padding:6px 12px;font-size:13px}
+.u2{display:grid;grid-template-columns:minmax(240px,300px) 1fr;gap:40px;padding:24px 20px}
+.un{font-size:14px;font-weight:600}.unm{margin:2px 0 16px;font-size:22px;font-weight:800;text-transform:uppercase;line-height:1.2;word-break:break-word}
+.fd{margin-bottom:12px}.fd label{display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#111827}
+.fd div{background:#ececec;border-radius:3px;padding:8px 10px;font-size:12.5px;font-weight:600;color:#475569;min-height:34px;word-break:break-word;white-space:pre-wrap}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.ubt{display:flex;gap:8px;justify-content:center;align-items:center;width:100%;background:#0b57d0;color:#fff;border:0;border-radius:4px;padding:10px;font-size:12.5px;font-weight:700;margin-top:10px}
+.ubt svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.utb{display:flex;overflow-x:auto;border-bottom:1px solid #d9dde3;margin-bottom:16px}
+.utb button{flex:1;min-width:130px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;font-size:10.5px;font-weight:800;text-transform:uppercase;color:#1f2937;padding:10px 8px;line-height:1.35}
+.utb button.on{color:#2563eb;background:#e8eefc;border-color:#2563eb}
+.uh{margin:6px 0 12px;font-size:15px;color:#2563eb;font-weight:700}
+.lg{background:#ececec;border-radius:3px;padding:8px 10px;font-size:12.5px;color:#475569;margin-bottom:8px}.lg b{color:#111827}
+@media(max-width:820px){.u2{grid-template-columns:1fr;gap:20px;padding:18px 14px}}
 </style></head><body>
 <div id="login"><h2 style="margin:0">Masuk</h2>
 <div class="bar" style="margin:0"><button id="pa" class="p" onclick="peran('admin')">Admin</button><button id="ps" onclick="peran('siswa')">Siswa</button></div>
@@ -161,19 +178,23 @@ $('#d-b').innerHTML=Object.keys(WR).map(k=>`<button class="bar2" onclick="keb('$
 +`<div class="warn ${belum==0?'ok':belum>tsd?'bad':''}">${belum==0?'Semua lulusan sudah memegang blanko.':belum+' lulusan belum memegang blanko, stok tersedia '+tsd+(belum>tsd?' (kurang '+(belum-tsd)+')':'')+'.'}</div>`}
 function tutup(){$('#dtl').hidden=true;document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&!$('#dtl').hidden)tutup()});
-function lihat(i){const r=D[i],n={lulus:1,'ijazah tercetak':2,'sudah diambil':3,duplikat:3}[r.status]||1,jc=E((r.jenjang||'').slice(-1)),
-jj=[r.jenjang,r.jurusan].filter(Boolean).join(' '),
-st=['Lulus','Ijazah tercetak','Sudah diambil'].map((t,k)=>`<div class="sp ${k<n?'on':''}"><i>${k<n?'✓':k+1}</i>${t}</div>`).join('');
-$('#dtl').innerHTML=`<div class="dw"><div class="myh"><div class="mytop"><button onclick="tutup()">← Kembali</button><span>Detail Lulusan</span><span style="width:76px"></span></div>
-<div class="who"><div class="av">${E(ini(r.nama))}</div><div><h2>${E(r.nama)}</h2><small>NISN ${E(r.nisn)||'-'}</small><div class="tg"><span class="tag j${jc}">${E(jj)||'-'}</span><span class="tag">${E(r.tahun_lulus)||'-'}</span><span class="tag ${sk(r.status)}">${E(r.status)}</span></div></div></div></div>
-<div class="mc up"><h3>Status Ijazah</h3><div class="stp">${st}</div></div>
-<div class="mc"><h3>Data Diri</h3>${rw([['Nama lengkap',r.nama],['NISN',r.nisn],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])}</div>
-<div class="mc"><h3>Data Kelulusan</h3>${rw([['Jenjang',r.jenjang],['Jurusan',r.jurusan],['Tahun lulus',r.tahun_lulus],['Status',r.status]])}</div>
-<div class="mc"><h3>Ijazah dan Blanko</h3>${rw([['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima]])}</div>
-${r.catatan?`<div class="mc"><h3>Catatan</h3><div style="font-size:14px;white-space:pre-wrap">${E(r.catatan)}</div></div>`:''}
-<div class="mc"><div class="rw"><span>Data dicatat</span><b>${tg(r.dibuat)||'-'}</b></div></div>
-<div class="ab"><button onclick="tutup();formL(${i})">Ubah data</button>${r.no_seri?'':`<button class="p" onclick="tutup();pakai(${r.id})">Pakai blanko</button>`}</div></div>`;
-$('#dtl').hidden=false;$('#dtl').scrollTop=0;document.body.style.overflow='hidden'}
+const PN='<svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+const fd=(l,v)=>`<div class="fd"><label>${l}</label><div>${E(v)||'-'}</div></div>`,tgs=d=>d?new Date(d).toLocaleDateString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+const TU=['Data Diri','Data Kelulusan & Ijazah','Catatan & Riwayat Blanko'];
+function lihat(i){const r=D[i];
+$('#dtl').innerHTML=`<div class="dw"><div class="ub"><button onclick="tutup()">← Kembali</button><span>Detail Lulusan</span></div>
+<div class="u2"><div><div class="un">${E(r.nisn)||'-'}</div><h2 class="unm">${E(r.nama)}</h2>
+${fd('Jenjang Pendidikan',r.jenjang)}${fd('Jurusan',r.jurusan)}${fd('Tahun Lulus',r.tahun_lulus)}${fd('Status Ijazah',r.status)}${fd('Nomor Seri Blanko',r.no_seri)}${fd('Data Dicatat',tgs(r.dibuat))}
+<button class="ubt" onclick="tutup();formL(${i})">${PN} Edit Data Lulusan</button>
+${r.no_seri?`<button class="ubt" onclick="tabU(${i},2)">${PN} Riwayat Blanko</button>`:`<button class="ubt" onclick="tutup();pakai(${r.id})">${PN} Pakai Blanko</button>`}</div>
+<div><div class="utb" id="utb"></div><div id="utc"></div></div></div></div>`;
+tabU(i,0);$('#dtl').hidden=false;$('#dtl').scrollTop=0;document.body.style.overflow='hidden'}
+function tabU(i,k){const r=D[i];$('#utb').innerHTML=TU.map((t,x)=>`<button class="${x==k?'on':''}" onclick="tabU(${i},${x})">${t}</button>`).join('');let h='';
+if(k==0)h=`<h3 class="uh">1. Data Diri Lulusan</h3>${fd('Nomor Induk Siswa Nasional (NISN)',r.nisn)}${fd('Nomor Induk Kependudukan (NIK)',r.nik)}${fd('Tempat Lahir',(r.tempat_lahir||'').toUpperCase())}${fd('Tanggal Lahir',tgs(r.tgl_lahir))}${fd('Nama Orang Tua',r.ortu)}`;
+else if(k==1)h=`<h3 class="uh">1. Data Ijazah</h3>${fd('Nomor Ijazah',r.no_ijazah)}${fd('Nomor Seri Blanko',r.no_seri)}<h3 class="uh">2. Penyerahan Ijazah</h3><div class="f2">${fd('Tanggal Terbit',tgs(r.tgl_terbit))}${fd('Tanggal Diambil',tgs(r.tgl_diambil))}</div>${fd('Nama Penerima',r.penerima)}`;
+else{h=`<h3 class="uh">1. Catatan</h3>${fd('Catatan',r.catatan)}<h3 class="uh">2. Riwayat Blanko</h3><div id="rwy">${r.blanko_id?'Memuat...':'<div class="lg">Belum ada blanko yang dipakai.</div>'}</div>`;
+if(r.blanko_id)api('blanko?log='+r.blanko_id).then(l=>{const e=$('#rwy');if(e)e.innerHTML=l.map(x=>`<div class="lg"><b>${E(x.aksi)}</b> ${E(x.detail)||''}<br><small>${new Date(x.waktu).toLocaleString('id-ID')} · ${E(x.oleh)}</small></div>`).join('')||'<div class="lg">Belum ada riwayat.</div>'}).catch(()=>{const e=$('#rwy');if(e)e.textContent='Riwayat gagal dimuat.'})}
+$('#utc').innerHTML=h}
 let J='';
 const sk=x=>({lulus:'s-lulus','ijazah tercetak':'s-tercetak','sudah diambil':'s-diambil',duplikat:'s-duplikat'}[x]||'');
 function jen(v,el){J=v;document.querySelectorAll('#jc button').forEach(x=>x.classList.toggle('on',x==el));cari()}
