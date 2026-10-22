@@ -68,6 +68,12 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 .bar2{display:grid;grid-template-columns:110px 1fr 36px;gap:10px;align-items:center;width:100%;border:0;background:none;padding:6px 0;font-size:13px;text-align:left}
 .bar2 em{display:block;height:8px;border-radius:99px;background:#e8edf5;overflow:hidden}.bar2 em i{display:block;height:100%;border-radius:99px}.bar2 b{text-align:right}
 .warn{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fef3c7;color:#92400e;font-size:13px}.warn.bad{background:#fee2e2;color:#991b1b}.warn.ok{background:#dcfce7;color:#166534}
+
+#dtl{position:fixed;inset:0;z-index:50;background:#f3f5fb;overflow:auto}
+.dw{max-width:760px;margin:0 auto;min-height:100%;padding-bottom:90px;background:#f3f5fb}
+.dw .who h2{font-size:20px}.dw .tg{margin-top:8px}.dw .tag{background:rgba(255,255,255,.9)}
+.ab{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:760px;background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:10px;padding:10px 16px max(10px,env(safe-area-inset-bottom))}
+.ab button{flex:1;border-radius:12px;padding:11px}.ab .p{background:#2563eb;border-color:#2563eb}
 </style></head><body>
 <div id="login"><h2 style="margin:0">Masuk</h2>
 <div class="bar" style="margin:0"><button id="pa" class="p" onclick="peran('admin')">Admin</button><button id="ps" onclick="peran('siswa')">Siswa</button></div>
@@ -77,6 +83,7 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <small id="hint" class="mut" hidden>Kata sandi siswa adalah tanggal lahir, contoh 17082008.</small>
 <button class="p" onclick="masuk()">Masuk</button></div>
 <div id="my" hidden></div>
+<div id="dtl" hidden></div>
 <div id="app" hidden>
 <header><h1>Data Lulusan dan Kendali Blanko</h1><button onclick="keluar()">Keluar</button></header>
 <main>
@@ -152,6 +159,21 @@ $('#d-s').innerHTML=ST.map(([k,c])=>{const n=L.filter(r=>r.status==k).length;ret
 const rg=B.ringkas,tot=Object.values(rg).reduce((a,b)=>a+b,0)||1,tsd=rg.tersedia||0,belum=L.filter(r=>!r.no_seri).length;
 $('#d-b').innerHTML=Object.keys(WR).map(k=>`<button class="bar2" onclick="keb('${k}')"><span>${k}</span><em><i style="width:${(rg[k]||0)/tot*100}%;background:${WR[k]}"></i></em><b>${rg[k]||0}</b></button>`).join('')
 +`<div class="warn ${belum==0?'ok':belum>tsd?'bad':''}">${belum==0?'Semua lulusan sudah memegang blanko.':belum+' lulusan belum memegang blanko, stok tersedia '+tsd+(belum>tsd?' (kurang '+(belum-tsd)+')':'')+'.'}</div>`}
+function tutup(){$('#dtl').hidden=true;document.body.style.overflow=''}
+document.addEventListener('keydown',e=>{if(e.key=='Escape'&&!$('#dtl').hidden)tutup()});
+function lihat(i){const r=D[i],n={lulus:1,'ijazah tercetak':2,'sudah diambil':3,duplikat:3}[r.status]||1,jc=E((r.jenjang||'').slice(-1)),
+jj=[r.jenjang,r.jurusan].filter(Boolean).join(' '),
+st=['Lulus','Ijazah tercetak','Sudah diambil'].map((t,k)=>`<div class="sp ${k<n?'on':''}"><i>${k<n?'✓':k+1}</i>${t}</div>`).join('');
+$('#dtl').innerHTML=`<div class="dw"><div class="myh"><div class="mytop"><button onclick="tutup()">← Kembali</button><span>Detail Lulusan</span><span style="width:76px"></span></div>
+<div class="who"><div class="av">${E(ini(r.nama))}</div><div><h2>${E(r.nama)}</h2><small>NISN ${E(r.nisn)||'-'}</small><div class="tg"><span class="tag j${jc}">${E(jj)||'-'}</span><span class="tag">${E(r.tahun_lulus)||'-'}</span><span class="tag ${sk(r.status)}">${E(r.status)}</span></div></div></div></div>
+<div class="mc up"><h3>Status Ijazah</h3><div class="stp">${st}</div></div>
+<div class="mc"><h3>Data Diri</h3>${rw([['Nama lengkap',r.nama],['NISN',r.nisn],['NIK',r.nik],['Tempat lahir',r.tempat_lahir],['Tanggal lahir',tg(r.tgl_lahir)],['Nama orang tua',r.ortu]])}</div>
+<div class="mc"><h3>Data Kelulusan</h3>${rw([['Jenjang',r.jenjang],['Jurusan',r.jurusan],['Tahun lulus',r.tahun_lulus],['Status',r.status]])}</div>
+<div class="mc"><h3>Ijazah dan Blanko</h3>${rw([['Nomor ijazah',r.no_ijazah],['Nomor seri blanko',r.no_seri],['Tanggal terbit',tg(r.tgl_terbit)],['Tanggal diambil',tg(r.tgl_diambil)],['Nama penerima',r.penerima]])}</div>
+${r.catatan?`<div class="mc"><h3>Catatan</h3><div style="font-size:14px;white-space:pre-wrap">${E(r.catatan)}</div></div>`:''}
+<div class="mc"><div class="rw"><span>Data dicatat</span><b>${tg(r.dibuat)||'-'}</b></div></div>
+<div class="ab"><button onclick="tutup();formL(${i})">Ubah data</button>${r.no_seri?'':`<button class="p" onclick="tutup();pakai(${r.id})">Pakai blanko</button>`}</div></div>`;
+$('#dtl').hidden=false;$('#dtl').scrollTop=0;document.body.style.overflow='hidden'}
 let J='';
 const sk=x=>({lulus:'s-lulus','ijazah tercetak':'s-tercetak','sudah diambil':'s-diambil',duplikat:'s-duplikat'}[x]||'');
 function jen(v,el){J=v;document.querySelectorAll('#jc button').forEach(x=>x.classList.toggle('on',x==el));cari()}
@@ -160,7 +182,7 @@ $('#cnt').textContent=D.length+' lulusan'+(J?' · '+J:'');
 $('#rows').innerHTML=D.map((r,i)=>`<div class="lc"><div class="lav j${E((r.jenjang||'').slice(-1))}">${E(ini(r.nama))}</div><div class="lb"><b>${E(r.nama)}</b><small>NISN ${E(r.nisn)||'-'}</small>
 <div class="tg"><span class="tag j${E((r.jenjang||'').slice(-1))}">${E([r.jenjang,r.jurusan].filter(Boolean).join(' '))||'-'}</span><span class="tag">${E(r.tahun_lulus)||'-'}</span><span class="tag ${sk(r.status)}">${E(r.status)}</span></div>
 <small>No. ijazah: ${E(r.no_ijazah)||'-'}</small>
-<div class="ac">${r.no_seri?`<span class="tag terpakai">Blanko ${E(r.no_seri)}</span>`:`<button class="p" onclick="pakai(${r.id})">Pakai blanko</button>`}<button onclick="formL(${i})">Ubah</button></div></div></div>`).join('')||'<div class="kosong">Belum ada data. Tambah lulusan atau impor CSV.</div>'}
+<div class="ac"><button class="p" onclick="lihat(${i})">Tampilkan</button>${r.no_seri?`<span class="tag terpakai">Blanko ${E(r.no_seri)}</span>`:`<button onclick="pakai(${r.id})">Pakai blanko</button>`}<button onclick="formL(${i})">Ubah</button></div></div></div>`).join('')||'<div class="kosong">Belum ada data. Tambah lulusan atau impor CSV.</div>'}
 function formL(i){const r=i==null?{status:'lulus'}:D[i];$('#fl').innerHTML=FL.map(([k,l,t])=>{const v=E((r[k]||'').toString().slice(0,t=='date'?10:99));
 return t&&t.startsWith('sel')?`<label>${l}<select name="${k}">${t.slice(4).split(',').map(o=>`<option ${o==r[k]?'selected':''}>${o}</option>`).join('')}</select></label>`:`<label>${l}<input name="${k}" type="${t||'text'}" value="${v}" ${k=='nama'?'required':''}></label>`}).join('')+`<input type="hidden" name="id" value="${r.id||''}">`;
 $('#hp').hidden=!r.id||R!='admin';$('#df').showModal()}
