@@ -1,5 +1,5 @@
 const { pool, auth, fail, err } = require('./_lib');
-const { F, SEL, impor } = require('./_impor');
+const { F, SEL, impor, tgl } = require('./_impor');
 const { catat, selisih } = require('./_log');
 // kolom NIPD (istilah Dapodik) dianggap sama dengan NIS
 const clean = o => F.map(k => { let v = o[k]; if (k === 'nis' && (v === undefined || v === '')) v = o.nipd;
@@ -39,7 +39,30 @@ module.exports = async (req, res) => {
           return res.json(h);
         } catch (e) { await c.query('rollback').catch(() => {}); throw e; } finally { c.release(); }
       }
+      if (b.aksi === 'ambil' || b.aksi === 'batal-ambil') { // penyerahan ijazah: satu atau banyak lulusan sekaligus (per gelombang)
+        const ids = [...new Set((Array.isArray(b.ids) ? b.ids : [b.id]).map(Number).filter(Number.isInteger))];
+        if (!ids.length || ids.length > 5000) throw err(400, 'Pilih 1 sampai 5000 lulusan');
+        const ambil = b.aksi === 'ambil', t = ambil ? tgl(String(b.tgl || '').trim()) : null;
+        if (ambil && !t) throw err(400, 'Tanggal pengambilan tidak valid (pakai YYYY-MM-DD atau DD-MM-YYYY)');
+        const pn = ambil ? (String(b.penerima || '').trim() || 'Yang bersangkutan') : null, c = await pool.connect();
+        try {
+          await c.query('begin');
+          const r = await c.query(ambil
+            ? `update lulusan set tgl_diambil=$1, penerima=$2, status='sudah diambil' where id=any($3) and status in ('lulus','ijazah tercetak') returning id,nama,nisn,jenjang`
+            : `update lulusan set tgl_diambil=null, penerima=null, status='ijazah tercetak' where id=any($1) and status='sudah diambil' returning id,nama,nisn,jenjang`,
+            ambil ? [t, pn, ids] : [ids]);
+          await catat(c, r.rows.map(x => ({ id: x.id, aksi: 'ubah', nama: x.nama, nisn: x.nisn, jenjang: x.jenjang, oleh: u.oleh,
+            detail: { perubahan: ambil ? [{ k: 'status', lama: 'ijazah tercetak', baru: 'sudah diambil' }, { k: 'tgl_diambil', lama: null, baru: t }, { k: 'penerima', lama: null, baru: pn }]
+                                       : [{ k: 'status', lama: 'sudah diambil', baru: 'ijazah tercetak' }, { k: 'tgl_diambil', lama: null, baru: null }] } })));
+          await c.query('commit');
+          return res.json({ ok: 1, diubah: r.rowCount, dilewati: ids.length - r.rowCount });
+        } catch (e) { await c.query('rollback').catch(() => {}); throw e; } finally { c.release(); }
+      }
       if (!b.nama) throw err(400, 'Nama wajib diisi');
+      // data lulusan dianggap sudah tercetak; ada tanggal ambil = sudah diambil (kecuali duplikat)
+      if (!b.status || b.status === 'lulus') b.status = 'ijazah tercetak';
+      if (b.tgl_diambil && b.status === 'ijazah tercetak') b.status = 'sudah diambil';
+      if (!b.tgl_diambil && b.status === 'sudah diambil') b.tgl_diambil = new Date().toISOString().slice(0, 10);
       const v = clean(b), baru = Object.fromEntries(F.map((k, i) => [k, v[i]])), c = await pool.connect();
       try {
         await c.query('begin');

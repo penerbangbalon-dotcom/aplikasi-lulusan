@@ -52,6 +52,7 @@ function periksa(o) {
   if (d.status) { const s = pilih(d.status, STATUS); if (s) d.status = s.toLowerCase(); else galat.push(`Status "${d.status}" tidak dikenal (${STATUS.join(', ')})`); }
   for (const k of TGL) if (d[k]) { const t = tgl(d[k]); if (t) d[k] = t; else galat.push(`${k} "${d[k]}" bukan tanggal yang valid (pakai YYYY-MM-DD atau DD-MM-YYYY)`); }
   for (const k of INT) if (d[k]) { if (/^\d{4}$/.test(d[k]) && +d[k] >= 1950 && +d[k] <= 2100) d[k] = String(+d[k]); else galat.push(`${k} "${d[k]}" tidak valid (harus tahun 4 digit)`); }
+  if (!d.status && d.tgl_diambil) d.status = 'sudah diambil'; // ada tanggal ambil = sudah diambil
   if (!d.nisn) peringatan.push('Tanpa NISN: tidak bisa dicocokkan dengan data lama, selalu dihitung sebagai data baru');
   return { d, galat, peringatan };
 }
@@ -107,7 +108,7 @@ async function impor(c, b, oleh) {
   if (!b.simpan) return keluar;
 
   if (ringkasan.error) throw err(400, `Impor dibatalkan: ${ringkasan.error} baris masih bermasalah. Tidak ada data yang disimpan.`);
-  const baru = hasil.filter(h => h.hasil === 'baru').map(h => ({ ...h.d, status: h.d.status || 'lulus' })), ubah = hasil.filter(h => h.hasil === 'perbarui');
+  const baru = hasil.filter(h => h.hasil === 'baru').map(h => ({ ...h.d, status: h.d.status || 'ijazah tercetak' })), ubah = hasil.filter(h => h.hasil === 'perbarui');
   const log = [];
   if (baru.length) {
     const r = await c.query(`insert into lulusan(${F}) select * from unnest(${F.map((k, i) => `$${i + 1}::${tipe(k)}[]`)}) returning id,nama,nisn,jenjang`, F.map(k => baru.map(r => r[k] ?? null)));

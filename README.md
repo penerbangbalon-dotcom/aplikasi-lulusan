@@ -41,3 +41,11 @@
 - Kartu "Lulusan per Jenjang" kini setinggi kartu Data Lembaga dan Perkembangan Kelulusan. Tiap jenjang menampilkan jumlah dan persentase dari total.
 - Data Lulusan: kolom pencarian nama di bagian atas. Bawaannya mencari di nama saja (beberapa kata, urutan bebas, misalnya "santoso budi"). Pilih "Cari juga NIS, NISN, NIK, no. ijazah, dll." untuk mencari di semua kolom seperti sebelumnya. Tidak perlu migrasi database.
 - Login siswa: NIK, Tanggal Diambil, dan Nama Penerima tidak lagi tampil di Data Diri, Ijazah, detail, maupun hasil cetak (PDF/JPG). Data ini juga tidak lagi dikirim oleh api/saya.js, jadi tidak bisa dilihat lewat inspeksi peramban. Tampilan admin tidak berubah.
+
+## Versi 4.6: data lulusan dianggap sudah tercetak, pengambilan dicatat terpisah
+- Jalankan migrasi-v8.sql SEBELUM memakai versi ini (aman dijalankan berulang). Data berstatus "lulus" menjadi "ijazah tercetak", dan yang sudah punya tanggal diambil menjadi "sudah diambil". Instalasi baru cukup schema.sql.
+- Lulusan baru (manual maupun impor CSV) otomatis berstatus "ijazah tercetak", tanpa perlu memakai blanko. Bila tanggal diambil terisi (di form atau kolom tgl_diambil pada CSV), statusnya otomatis "sudah diambil".
+- Kartu Perkembangan Kelulusan: "Ijazah Tercetak" = tercetak + sudah diambil; "Belum Pegang Blanko" diganti "Belum Diambil". Persentase = sudah diambil dari total lulusan.
+- Data Lulusan: tombol "Tandai diambil" per lulusan (tanggal dan nama pengambil, bisa diwakilkan), "Batal diambil", dan "Tandai semua yang tampil diambil" untuk satu gelombang (atur filter dulu). Semua tercatat di riwayat perubahan. Filter status "belum diambil" sama dengan status ijazah tercetak.
+- Modul blanko menjadi opsional: ijazah lama tidak wajib punya catatan nomor blanko, dan dashboard tidak lagi menampilkan kekurangan stok untuk data historis.
+- Revisi 4.6: dua tombol di Data Lulusan. "Tandai semua diambil" (semua yang tampil sesuai filter) dan "Tandai satu per satu" (mode centang: centang lulusan yang sudah mengambil, lalu "Tandai terpilih diambil"). Nomor ijazah memakai kolom no_ijazah dari data yang diunggah, sehingga format berbeda tiap tahun tidak masalah. Tampilan daftar dan detail lulusan tidak lagi memakai nomor seri blanko.
