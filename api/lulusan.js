@@ -17,10 +17,15 @@ module.exports = async (req, res) => {
       return res.json((await pool.query(`select ${SEL} from lulusan order by tahun_lulus, jenjang, nama, id limit 5000 offset $1`, [Math.max(0, +req.query.ekspor || 0)])).rows);
     }
     if (req.method === 'GET') {
-      const { q = '', tahun = '', status = '', jenjang = '', jurusan = '', blanko = '' } = req.query, like = '%' + q + '%';
+      const { q = '', tahun = '', status = '', jenjang = '', jurusan = '', blanko = '', mode = 'nama' } = req.query, like = '%' + q + '%';
+      // mode "nama" (bawaan): setiap kata yang diketik harus ada di nama, urutan bebas. mode "semua": cari di semua kolom.
+      const kata = String(q).trim().split(/\s+/).filter(Boolean).map(k => '%' + k.replace(/[\\%_]/g, '\\$&') + '%');
+      const cocokQ = mode === 'semua'
+        ? `($1='' or l.nama ilike $2 or l.nis ilike $2 or l.peserta_upk ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2 or l.tempat_lahir ilike $2 or l.ortu ilike $2 or l.penerima ilike $2) and $8::text[] is not null`
+        : `($1='' or l.nama ilike all($8::text[])) and $2::text is not null`;
       const r = await pool.query(`select l.*, b.no_seri from lulusan l left join blanko b on b.id=l.blanko_id
-        where ($1='' or l.nama ilike $2 or l.nis ilike $2 or l.peserta_upk ilike $2 or l.nisn ilike $2 or l.nik ilike $2 or l.no_ijazah ilike $2 or b.no_seri ilike $2 or l.tempat_lahir ilike $2 or l.ortu ilike $2 or l.penerima ilike $2)
-        and ($3='' or l.tahun_lulus::text=$3) and ($4='' or l.status=$4) and ($5='' or l.jenjang=$5) and ($6='' or l.jurusan=$6) and ($7='' or ($7='ada' and l.blanko_id is not null) or ($7='belum' and l.blanko_id is null)) order by l.tahun_lulus desc, l.nama limit ${req.query.semua ? 5000 : 300}`, [q, like, tahun, status, jenjang, jurusan, blanko]);
+        where ${cocokQ}
+        and ($3='' or l.tahun_lulus::text=$3) and ($4='' or l.status=$4) and ($5='' or l.jenjang=$5) and ($6='' or l.jurusan=$6) and ($7='' or ($7='ada' and l.blanko_id is not null) or ($7='belum' and l.blanko_id is null)) order by l.tahun_lulus desc, l.nama limit ${req.query.semua ? 5000 : 300}`, [q, like, tahun, status, jenjang, jurusan, blanko, kata]);
       return res.json(r.rows);
     }
     if (req.method === 'POST') {

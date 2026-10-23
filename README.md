@@ -36,3 +36,8 @@
 27. Batasan riwayat: perubahan sebelum v7 tidak tercatat. Login dengan kata sandi bawaan (ADMIN_PASSWORD atau OPERATOR_PASSWORD) hanya tercatat sebagai "admin" atau "operator", jadi untuk melacak orangnya buatlah pengguna sendiri di menu Pengguna & Peran. Pemakaian blanko tetap tercatat di riwayat blanko, bukan di riwayat lulusan.
 28. Ekspor CSV (tombol di Data Lulusan): mengunduh seluruh data lulusan, memakai pemisah titik koma dan UTF-8, sehingga langsung terbuka benar di Excel Indonesia. Kolomnya sama dengan format impor: berkas bisa diedit lalu diimpor lagi dengan mode "Perbarui". Ekspor BUKAN cadangan lengkap (tidak memuat blanko, riwayat, dan pengguna). Lihat PANDUAN-CADANGAN.md.
 29. Impor CSV: batas naik menjadi 10.000 baris per berkas. Pratinjau menampilkan paling banyak 3.000 baris (baris salah didahulukan), tetapi SEMUA baris tetap diperiksa dan disimpan. NISN yang kehilangan angka 0 di depan akibat Excel (12345678 menjadi 0012345678) dilengkapi otomatis, termasuk saat mencocokkan dengan data lama.
+
+## Versi 4.5: tampilan dashboard, pencarian nama, privasi siswa
+- Kartu "Lulusan per Jenjang" kini setinggi kartu Data Lembaga dan Perkembangan Kelulusan. Tiap jenjang menampilkan jumlah dan persentase dari total.
+- Data Lulusan: kolom pencarian nama di bagian atas. Bawaannya mencari di nama saja (beberapa kata, urutan bebas, misalnya "santoso budi"). Pilih "Cari juga NIS, NISN, NIK, no. ijazah, dll." untuk mencari di semua kolom seperti sebelumnya. Tidak perlu migrasi database.
+- Login siswa: NIK, Tanggal Diambil, dan Nama Penerima tidak lagi tampil di Data Diri, Ijazah, detail, maupun hasil cetak (PDF/JPG). Data ini juga tidak lagi dikirim oleh api/saya.js, jadi tidak bisa dilihat lewat inspeksi peramban. Tampilan admin tidak berubah.
