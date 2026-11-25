@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pendaftaran Siswa Baru</title>
+<style>
+:root{--ink:#1e293b;--mut:#64748b;--line:#d8dee8;--p:#4c1d95;--bg:#f4f6fb}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+main{max-width:640px;margin:0 auto;padding:18px 14px 40px}
+.kop{display:flex;gap:12px;align-items:center;margin-bottom:14px}.kop img{width:56px;height:56px;object-fit:contain}.kop h1{font-size:18px;margin:0}.kop small{color:var(--mut)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+label{display:block;font-size:13px;color:var(--mut);margin-top:12px}label b{color:#b91c1c}
+input,select{width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit;color:var(--ink);background:#fff}
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:520px){.dua{grid-template-columns:1fr}}
+.pil{display:flex;gap:16px;margin-top:6px}.pil label{display:flex;gap:6px;align-items:center;margin:0;color:var(--ink);font-size:15px}.pil input{width:auto;margin:0}
+button{margin-top:18px;width:100%;padding:12px;border:0;border-radius:8px;background:var(--p);color:#fff;font:600 16px system-ui,sans-serif;cursor:pointer}button:disabled{opacity:.6}
+.pesan{padding:12px;border-radius:8px;margin-bottom:12px;font-size:14px}.err{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#166534}.info{background:#e0e7ff;color:#3730a3}
+.hp{position:absolute;left:-9999px;height:0;overflow:hidden}.no{font-size:26px;font-weight:700;letter-spacing:1px;margin:8px 0}
+small.cat{display:block;margin-top:14px;color:var(--mut);font-size:12.5px}
+</style></head><body><main>
+<div class="kop"><img src="/logo.png" alt="" onerror="this.style.display='none'"><div><h1 id="lem">Pendaftaran Siswa Baru</h1><small id="almt"></small></div></div>
+<div class="card" id="kartu"><p>Memuat...</p></div>
+</main>
+<script>
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let C={};
+async function muat(){
+ try{C=await (await fetch('/api/ppdb?konfigurasi=1')).json()}catch(e){$('#kartu').innerHTML='<div class="pesan err">Tidak dapat terhubung. Coba lagi nanti.</div>';return}
+ if(C.lembaga){$('#lem').textContent='Pendaftaran Siswa Baru '+C.lembaga;document.title=$('#lem').textContent}
+ $('#almt').textContent=C.alamat||'';
+ if(!C.buka){$('#kartu').innerHTML='<div class="pesan info">Pendaftaran siswa baru saat ini belum dibuka atau sudah ditutup. Silakan hubungi petugas.</div>';return}
+ $('#kartu').innerHTML=`<div class="pesan info">Tahun ajaran <b>${E(C.tahun_ajaran)}</b>.${C.info?' '+E(C.info):''}</div><div id="gal"></div>
+<form id="f" onsubmit="kirim(event);return false" autocomplete="off">
+<div class="pil"><label><input type="radio" name="jenis" value="baru" checked> Siswa baru</label><label><input type="radio" name="jenis" value="pindahan"> Siswa pindahan</label></div>
+<label>Nama lengkap <b>*</b><input name="nama" required maxlength="150"></label>
+<div class="dua"><label>Jenis kelamin <b>*</b><select name="jk" required><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select></label>
+<label>Jenjang yang dituju <b>*</b><select name="jenjang" required><option value="">Pilih</option><option>Paket A</option><option>Paket B</option><option>Paket C</option></select></label></div>
+<div class="dua"><label>Tempat lahir<input name="tempat_lahir" maxlength="150"></label><label>Tanggal lahir <b>*</b><input name="tgl_lahir" type="date" required></label></div>
+<div class="dua"><label>NIK (16 digit)<input name="nik" inputmode="numeric" maxlength="16"></label><label>NISN (bila ada)<input name="nisn" inputmode="numeric" maxlength="10"></label></div>
+<div class="dua"><label>Nama ayah<input name="ayah" maxlength="150"></label><label>Nama ibu<input name="ibu" maxlength="150"></label></div>
+<label>Alamat<input name="alamat" maxlength="400"></label>
+<div class="dua"><label>Nomor HP / WhatsApp <b>*</b><input name="hp" type="tel" inputmode="tel" required maxlength="30"></label><label>Asal sekolah (bila ada)<input name="asal_sekolah" maxlength="150"></label></div>
+<div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<button id="kb">Kirim pendaftaran</button>
+<small class="cat">Data yang Anda isi hanya dipakai untuk keperluan pendaftaran dan hanya dapat dilihat petugas lembaga.</small></form>`;
+}
+async function kirim(e){
+ const f=e.target,b=Object.fromEntries(new FormData(f));b.aksi='daftar';$('#kb').disabled=true;$('#gal').innerHTML='';
+ try{
+  const r=await fetch('/api/ppdb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}),d=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(d.error||'Gagal mengirim pendaftaran');
+  $('#kartu').innerHTML=`<div class="pesan ok">Pendaftaran berhasil dikirim.</div><p>Nomor pendaftaran Anda:</p><div class="no">${E(d.no_daftar)}</div><p>Simpan nomor ini. Petugas akan menghubungi nomor HP yang Anda isi untuk proses verifikasi dan daftar ulang.</p>`;
+  scrollTo(0,0);
+ }catch(x){$('#gal').innerHTML=`<div class="pesan err">${E(x.message)}</div>`;$('#kb').disabled=false;scrollTo(0,0)}
+}
+muat();
+</script></body></html>

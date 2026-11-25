@@ -13,12 +13,20 @@ const IZIN = [
   ['blanko.pakai', 'Memakai blanko untuk lulusan', 'Blanko ijazah'],
   ['blanko.stok', 'Menambah stok blanko', 'Blanko ijazah'],
   ['blanko.status', 'Menandai blanko rusak, hilang, atau dikembalikan', 'Blanko ijazah'],
+  ['siswa.lihat', 'Melihat data siswa', 'Data siswa'],
+  ['siswa.ubah', 'Menambah, mengubah, dan impor CSV data siswa', 'Data siswa'],
+  ['siswa.hapus', 'Menghapus data siswa', 'Data siswa'],
+  ['surat.lihat', 'Melihat register surat', 'Surat'],
+  ['surat.buat', 'Membuat dan mencetak surat (aktif, menerima siswa pindahan, mutasi)', 'Surat'],
+  ['surat.hapus', 'Menghapus surat dari register', 'Surat'],
+  ['ppdb.lihat', 'Melihat data pendaftar siswa baru', 'Pendaftaran siswa baru'],
+  ['ppdb.kelola', 'Memverifikasi, menerima, menolak pendaftar dan membuka/menutup pendaftaran', 'Pendaftaran siswa baru'],
   ['laporan.lihat', 'Melihat dan mencetak laporan', 'Laporan'],
   ['lembaga.ubah', 'Mengubah identitas lembaga dan logo', 'Pengaturan'],
   ['pengguna.kelola', 'Mengelola pengguna dan peran', 'Pengaturan'],
 ];
 const SEMUA = IZIN.map(x => x[0]);
-const OPERATOR = ['lulusan.lihat', 'lulusan.ubah', 'blanko.lihat', 'blanko.pakai', 'laporan.lihat'];
+const OPERATOR = ['lulusan.lihat', 'lulusan.ubah', 'blanko.lihat', 'blanko.pakai', 'laporan.lihat', 'siswa.lihat', 'siswa.ubah', 'surat.lihat', 'surat.buat', 'ppdb.lihat'];
 exports.IZIN = IZIN; exports.SEMUA = SEMUA;
 
 // ---- kata sandi pengguna (scrypt + salt acak) ----

@@ -242,7 +242,8 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <input id="pw" type="password" placeholder="Kata sandi" autocomplete="current-password">
 <small id="hint" class="mut" hidden>Kata sandi siswa adalah tanggal lahir, contoh 17082008.</small>
 <small id="hint2" class="mut">Kosongkan username untuk masuk dengan kata sandi bawaan admin.</small>
-<button class="p" onclick="masuk()">Masuk</button></div>
+<button class="p" onclick="masuk()">Masuk</button>
+<a href="/daftar.html" style="text-align:center;font-size:13px">Pendaftaran siswa baru</a></div>
 <div id="dtl" hidden></div>
 <div id="app" class="shell home" hidden>
 <aside id="sb"><div class="sbh"><button class="cb" onclick="kolaps()" aria-label="Ciutkan menu"><svg viewBox="0 0 24 24"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg></button><div class="lg0" id="sb-lg"><svg viewBox="0 0 24 24"><path d="M12 4L2 9l10 5 10-5z"/><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5"/><path d="M22 9v6"/></svg></div><div class="lgt">Data Lulusan<br>dan Kendali Blanko</div></div>
@@ -255,6 +256,9 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <button data-iz="lulusan.lihat" class="ao si" id="s1" onclick="tab(1)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg><span class="lbl">Data Lulusan</span></button>
 <button data-iz="blanko.lihat" class="ao si" id="s2" onclick="tab(2)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg><span class="lbl">Blanko Ijazah</span></button>
 <button data-iz="laporan.lihat" class="ao si" id="s3" onclick="tab(3)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="lbl">Laporan</span></button>
+<button data-iz="siswa.lihat" class="ao si" id="s5" onclick="tab(5)"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span class="lbl">Data Siswa</span></button>
+<button data-iz="surat.lihat" class="ao si" id="s6" onclick="tab(6)"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="lbl">Surat</span></button>
+<button data-iz="ppdb.lihat" class="ao si" id="s7" onclick="tab(7)"><svg viewBox="0 0 24 24"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><path d="M8 5H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2M9 13l2 2 4-4"/></svg><span class="lbl">Pendaftaran Siswa Baru</span></button>
 <div class="sdv ao"></div>
 <button data-iz="lulusan.ubah" class="ao si" onclick="tab(1);formL()"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/></svg><span class="lbl">Tambah Lulusan</span></button>
 <button data-iz="lulusan.ubah" class="ao si" onclick="$('#csv').click()"><svg viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg><span class="lbl">Impor CSV</span></button>
@@ -313,6 +317,9 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <div class="dc y"><div class="dh"><h3>Pengguna</h3><button class="p" onclick="formU()">+ Tambah pengguna</button></div><div id="urows"></div></div>
 <div class="dc"><div class="dh"><h3>Peran dan hak akses</h3><button class="p" onclick="formP()">+ Tambah peran</button></div><p class="mut" style="margin:0 0 12px;font-size:13px">Peran menentukan menu dan aksi yang boleh dipakai. Perubahan peran langsung berlaku untuk semua pengguna yang memakainya.</p><div id="prows"></div></div>
 </section>
+<section id="t5" hidden></section>
+<section id="t6" hidden></section>
+<section id="t7" hidden></section>
 </main></div>
 <nav class="bn bna" id="bns"><button class="on" data-t="b" onclick="TB='b';sv()"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</button><button data-t="d" onclick="TB='d';sv()"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Data Diri</button><button data-t="i" onclick="TB='i';sv()"><svg viewBox="0 0 24 24"><path d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg>Ijazah</button></nav>
 <nav class="bn bna" id="bna"><button id="n0" class="on" onclick="tab(0)"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</button><button data-iz="lulusan.lihat" id="n1" onclick="tab(1)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Lulusan</button><button data-iz="blanko.lihat" id="n2" onclick="tab(2)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg>Blanko</button><button data-iz="laporan.lihat" id="n3" onclick="tab(3)"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Laporan</button></nav></div>
@@ -331,7 +338,11 @@ header h1{font-size:17px;margin:0}header>button{background:rgba(255,255,255,.18)
 <label>Kata sandi lama<input name="lama" type="password" required autocomplete="current-password"></label><label style="margin-top:8px">Kata sandi baru (minimal 8 karakter)<input name="baru" type="password" required minlength="8" autocomplete="new-password"></label>
 <label style="margin-top:8px">Ulangi kata sandi baru<input name="ulang" type="password" required autocomplete="new-password"></label>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
-<dialog id="di"><form method="dialog" onsubmit="return simpanI(event)"><div class="g"><label>Nama lembaga<input name="nama"></label><label>Kota (untuk tanggal surat)<input name="kota"></label><label style="grid-column:1/3">Alamat<input name="alamat"></label><label>Provinsi<input name="provinsi" placeholder="02 - Jawa Barat"></label><label>Rayon<input name="rayon" placeholder="19 - Karawang"></label><label>Kode satuan pendidikan<input name="kode" placeholder="12"></label><span></span><label>Nama kepala<input name="kepala"></label><label>Nama petugas blanko<input name="petugas"></label></div>
+<dialog id="di"><form method="dialog" onsubmit="return simpanI(event)"><div class="g"><label>Nama lembaga<input name="nama"></label><label>Kota (untuk tanggal surat)<input name="kota"></label><label style="grid-column:1/3">Alamat<input name="alamat"></label><label>Provinsi<input name="provinsi" placeholder="02 - Jawa Barat"></label><label>Rayon<input name="rayon" placeholder="19 - Karawang"></label><label>Kode satuan pendidikan<input name="kode" placeholder="12"></label><span></span><label>Nama kepala<input name="kepala"></label><label>Nama petugas blanko<input name="petugas"></label>
+<label>Nama yayasan (kop surat)<input name="yayasan" placeholder="opsional"></label><label>NPSN<input name="npsn"></label><label style="grid-column:1/3">No. SK Kemenhukum<input name="sk"></label><label style="grid-column:1/3">Izin operasional<input name="ijin"></label>
+<label style="grid-column:1/3">Wilayah (di surat: "di PKBM ... [wilayah]")<input name="wilayah" placeholder="Desa Pasirmukti Kecamatan Telagasari Kab. Karawang"></label><label>Jabatan penanda tangan (kosong = bawaan tiap surat)<input name="jabatan" placeholder="Kepala"></label><label>NIP kepala<input name="nip" placeholder="kosong jika tidak ada"></label>
+<label style="grid-column:1/3">Format nomor surat aktif<input name="no_aktif" placeholder="421.9/{n}/PKBM-NI/{bulan}/{tahun}"></label><label style="grid-column:1/3">Format nomor surat menerima siswa pindahan<input name="no_diterima" placeholder="400.3.3/{nnn}/PKBM-NI/{bulan}/{tahun}"></label><label style="grid-column:1/3">Format nomor surat mutasi<input name="no_mutasi" placeholder="421.3/{nnn}/PKBM-NI/{bulan}/{tahun}"></label>
+<small class="mut" style="grid-column:1/3">Dalam format nomor: {n} = nomor urut, {nnn} = nomor urut 3 angka, {bulan} = bulan romawi, {tahun} = tahun.</small></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
 <dialog id="dr" style="max-width:940px"><h3 id="dr-t" style="margin:0 0 10px;font-size:16px">Riwayat perubahan data lulusan</h3>
 <div class="bar"><input id="dr-q" placeholder="Cari nama, NISN, atau nama petugas" oninput="tundaR()" style="flex:1;min-width:200px"><select id="dr-a" onchange="muatRiwayat()" style="width:auto"><option value="">Semua jenis</option><option value="tambah">Tambah</option><option value="ubah">Ubah</option><option value="hapus">Hapus</option><option value="impor-tambah">Impor: tambah</option><option value="impor-ubah">Impor: ubah</option></select></div>
@@ -389,10 +400,10 @@ if(R!='siswa'&&can('lembaga.ubah')){const b={};let li={};try{li=JSON.parse(local
 if(!Object.keys(p.identitas||{}).length&&Object.keys(li).length){b.identitas=li;Object.assign(I,li)}
 if(!p.logo&&localStorage.logo){b.logo=localStorage.logo;LG=b.logo}
 if(Object.keys(b).length){await api('pengaturan',b);localStorage.removeItem('i');localStorage.removeItem('logo')}}}catch(e){}}
-const PT=['Beranda','Data Lulusan','Blanko Ijazah','Laporan','Pengguna & Peran'];
-function tab(n){[0,1,2,3,4].forEach(i=>{$('#t'+i).hidden=i!=n;const a=$('#n'+i);a&&a.classList.toggle('on',i==n);$('#s'+i).classList.toggle('on',i==n)});
+const PT=['Beranda','Data Lulusan','Blanko Ijazah','Laporan','Pengguna & Peran','Data Siswa','Surat','Pendaftaran Siswa Baru'];
+function tab(n){[0,1,2,3,4,5,6,7].forEach(i=>{$('#t'+i).hidden=i!=n;const a=$('#n'+i);a&&a.classList.toggle('on',i==n);$('#s'+i).classList.toggle('on',i==n)});
 $('#app').classList.toggle('home',n==0);$('#ptl').hidden=n==0;$('#ptl').textContent=$('#mt').textContent=PT[n];kolaps(0);scrollTo(0,0);
-n==0?dash():n==1?cari():n==2?blanko():n==4?pengguna():0}
+n==0?dash():n==1?cari():n==2?blanko():n==4?pengguna():n==5?siswaMuat():n==6?suratMuat():n==7?ppdbMuat():0}
 const mob=()=>matchMedia('(max-width:899px)').matches;
 function kolaps(o){const a=$('#app');if(mob()){const b=o===undefined?!$('#sb').classList.contains('open'):!!o;$('#sb').classList.toggle('open',b);$('#scr').classList.toggle('on',b)}else if(o===undefined){a.classList.toggle('col');try{localStorage.col=a.classList.contains('col')?1:''}catch(e){}}}
 function cm(){const q=$('#ms').value.trim().toLowerCase();let n=0;document.querySelectorAll('#sl .si').forEach(b=>{const h=!!q&&!b.textContent.toLowerCase().includes(q);b.hidden=h;if(!h)n++});document.querySelectorAll('#sl .sdv').forEach(d=>d.hidden=!!q);$('#nr').hidden=n>0}
@@ -637,4 +648,5 @@ async function hapusP(id){const p=PG.peran.find(x=>x.id==id);if(!confirm('Hapus 
 async function simpanK(e){const f=e.target;if(f.elements.baru.value!=f.elements.ulang.value){alert('Kata sandi baru dan ulangannya tidak sama');return false}
 await api('akun',{lama:f.elements.lama.value,baru:f.elements.baru.value});f.reset();$('#dk').close();alert('Kata sandi diubah');return false}
 $('#pw').addEventListener('keydown',e=>e.key=='Enter'&&masuk());mulai();
-</script></body></html>
+</script>
+<script src="/kesiswaan.js"></script></body></html>
