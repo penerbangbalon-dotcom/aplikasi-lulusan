@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#t5').innerHTML = `<div class="mc up srch"><div class="sbx"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="ks-q" type="search" placeholder="Cari nama siswa..." autocomplete="off" oninput="ksTunda()" onkeydown="if(event.key=='Enter')ksCari()"></div>
 <div class="chips" id="ks-jc"><button class="on" onclick="ksJen('',this)">Semua</button><button onclick="ksJen('Paket A',this)">Paket A</button><button onclick="ksJen('Paket B',this)">Paket B</button><button onclick="ksJen('Paket C',this)">Paket C</button></div>
 <div class="fr"><select id="ks-st" onchange="ksCari()"><option value="aktif">Siswa aktif</option><option value="">Semua status</option><option value="pindah">Pindah (mutasi)</option><option value="lulus">Lulus</option><option value="nonaktif">Nonaktif</option></select><input id="ks-kl" placeholder="Kelas (mis. 9 B)" oninput="ksTunda()"><input id="ks-an" type="number" placeholder="Angkatan" oninput="ksTunda()"></div>
-<div class="fr"><button class="p" onclick="ksCari()">Tampilkan</button><button onclick="ksReset()">Reset filter</button><button data-iz="siswa.ubah" onclick="ksForm()">+ Tambah siswa</button><button data-iz="siswa.ubah" onclick="$('#ks-csv').click()">Impor CSV</button><input id="ks-csv" type="file" accept=".csv" hidden onchange="ksImpor(this)"><button onclick="ksEkspor()">Ekspor CSV</button></div>
+<div class="fr"><button class="p" onclick="ksCari()">Tampilkan</button><button onclick="ksReset()">Reset filter</button><button data-iz="siswa.ubah" onclick="ksForm()">+ Tambah siswa</button><button data-iz="siswa.ubah" onclick="tab(8)">Upload Excel/CSV</button><button onclick="ksEkspor()">Ekspor CSV</button></div>
 <div class="cnt" id="ks-cnt"></div><div id="ks-rows"></div></div>`;
   $('#t6').innerHTML = `<div class="mc up srch"><div class="fr"><button class="p" data-iz="surat.buat" onclick="srForm('aktif')">+ Surat Keterangan Aktif</button><button class="p" data-iz="surat.buat" onclick="srForm('diterima')">+ Menerima Siswa Pindahan</button><button class="p" data-iz="surat.buat" onclick="srForm('mutasi')">+ Surat Mutasi (Keluar)</button></div>
 <div class="fr"><select id="sr-j" onchange="srCari()"><option value="">Semua jenis surat</option><option value="aktif">Surat Keterangan Aktif</option><option value="diterima">Menerima Siswa Pindahan</option><option value="mutasi">Mutasi (Keluar)</option></select><input id="sr-t" type="number" placeholder="Tahun surat" oninput="srTunda()"><input id="sr-q" type="search" placeholder="Cari nama atau nomor surat" oninput="srTunda()"></div>
@@ -25,10 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#t7').innerHTML = `<div class="mc up srch"><div id="kp-info" class="dc" style="margin:0 0 10px"></div>
 <div class="fr"><select id="kp-st" onchange="kpCari()"><option value="">Semua status</option><option value="baru">Baru masuk</option><option value="diverifikasi">Diverifikasi</option><option value="diterima">Diterima</option><option value="ditolak">Ditolak</option></select><input id="kp-q" type="search" placeholder="Cari nama, no. pendaftaran, NISN, NIK" oninput="kpTunda()"></div>
 <div class="cnt" id="kp-cnt"></div><div id="kp-rows"></div></div>`;
+  $('#t8').innerHTML = `<div class="mc up srch"><div class="dc" style="margin:0 0 12px"><div class="dh"><h3>Upload Data Siswa</h3></div>
+<p style="margin:0 0 8px;font-size:14px">Unggah data siswa dari file <b>Excel (.xlsx)</b> atau <b>CSV</b>. Sebelum disimpan, Anda akan melihat pratinjau dan daftar baris yang salah. Tidak ada data yang masuk sebelum Anda menekan Simpan.</p>
+<ol style="margin:0 0 10px 18px;padding:0;font-size:13.5px;line-height:1.6"><li>Unduh template, isi data siswa (hanya kolom <b>Nama</b> yang wajib).</li><li>Atau pakai file hasil menu <b>Unduh Data Siswa</b> di aplikasi absensi, tanpa perlu diubah.</li><li>Pilih berkas di bawah, periksa pratinjau, lalu Simpan.</li></ol>
+<div class="fr"><button onclick="ksTemplate()">Unduh template Excel</button><button onclick="ksTemplateCsv()">Unduh template CSV</button></div></div>
+<div class="dc" style="margin:0"><label style="font-size:14px;color:var(--ink)">Pilih berkas Excel atau CSV<input id="up-f" type="file" accept=".xlsx,.csv" onchange="ksImpor(this)" style="margin-top:6px"></label>
+<small class="mut" style="display:block;margin-top:8px">Maksimal 10.000 baris. Siswa yang sudah ada dikenali dari NISN + Jenjang. Pilihan "Lewati" atau "Perbarui" muncul di pratinjau. Format .xls lama belum didukung (simpan ulang sebagai .xlsx).</small></div></div>`;
   document.body.insertAdjacentHTML('beforeend', `
 <dialog id="ks-d"><form method="dialog" onsubmit="ksSimpan(event);return false"><h3 id="ks-dt" style="margin:0 0 12px;font-size:16px">Data siswa</h3><div class="g" id="ks-f"></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" class="adm" id="ks-hp" onclick="ksHapus()">Hapus</button><button type="button" onclick="this.closest('dialog').close()">Batal</button><button class="p">Simpan</button></div></form></dialog>
-<dialog id="ks-di" style="max-width:980px"><h3 style="margin:0 0 2px;font-size:16px">Pratinjau impor data siswa</h3><div id="ks-if" style="font-size:13px;color:var(--mut);margin-bottom:10px"></div>
+<dialog id="ks-di" style="max-width:980px"><h3 style="margin:0 0 2px;font-size:16px">Pratinjau upload data siswa</h3><div id="ks-if" style="font-size:13px;color:var(--mut);margin-bottom:10px"></div>
 <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:8px;font-size:14px"><label style="display:flex;gap:6px;align-items:center;color:var(--ink);font-size:14px"><input type="radio" name="ks-m" value="lewati" checked style="width:auto;margin:0" onchange="ksMode(this.value)">Lewati siswa yang sudah ada</label><label style="display:flex;gap:6px;align-items:center;color:var(--ink);font-size:14px"><input type="radio" name="ks-m" value="perbarui" style="width:auto;margin:0" onchange="ksMode(this.value)">Perbarui siswa yang sudah ada (hanya kolom yang terisi)</label></div>
 <div class="tg" id="ks-is" style="margin-bottom:8px"></div><div style="max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:6px"><table id="ks-it" style="width:100%;border-collapse:collapse"></table></div>
 <div class="bar" style="margin:14px 0 0;justify-content:end"><button type="button" onclick="$('#ks-di').close()">Batal</button><button type="button" class="p" id="ks-iok" onclick="ksImporSimpan()" disabled>Simpan</button></div></dialog>
@@ -58,7 +64,7 @@ async function ksCari() {
 <div class="tg"><span class="tag j${E((r.jenjang || '').slice(-1))}">${E(r.jenjang) || '-'}</span><span class="tag">${r.kelas ? 'Kelas ' + E(r.kelas) : 'Kelas -'}</span><span class="tag ${kStat[r.status] || ''}">${E(r.status)}</span></div>
 <small>${E([r.tempat_lahir, kTg(r.tgl_lahir)].filter(Boolean).join(', ')) || '-'}${r.hp ? ' · HP ' + E(r.hp) : ''}</small>
 <div class="ac">${can('siswa.ubah') ? `<button class="p" onclick="ksForm(${i})">Ubah</button>` : ''}${can('surat.buat') && r.status == 'aktif' ? `<button onclick="srDari(${i},'aktif')">Surat aktif</button><button onclick="srDari(${i},'mutasi')">Mutasi</button>` : ''}</div></div></div>`).join('')
-    || '<div class="kosong">Belum ada siswa yang cocok. Tambah siswa atau impor CSV (hasil unduhan aplikasi absensi bisa langsung dipakai).</div>';
+    || '<div class="kosong">Belum ada siswa yang cocok. Tambah siswa atau pakai menu Upload Data Siswa (Excel/CSV; hasil unduhan aplikasi absensi bisa langsung dipakai).</div>';
 }
 function ksForm(i) {
   const r = i == null ? { status: 'aktif', angkatan: new Date().getFullYear() } : KS[i];
@@ -78,21 +84,61 @@ async function ksEkspor() {
   const kolom = KF.map(x => x[0]), a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([kCsv(d, kolom)], { type: 'text/csv;charset=utf-8' })); a.download = 'data-siswa-' + kHari() + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
-// ---- impor CSV siswa ----
+// ---- upload data siswa: Excel (.xlsx) atau CSV ----
 let KI = null;
-async function ksImpor(el) {
-  const f = el.files[0]; el.value = ''; if (!f) return;
-  let t; try { t = (await f.text()).replace(/^\uFEFF/, ''); } catch (e) { return alert('Berkas tidak bisa dibaca'); }
-  const l1 = t.split(/\r?\n/, 1)[0], s = [';', '\t', ','].map(c => [c, l1.split(c).length]).sort((a, b) => b[1] - a[1])[0][0];
-  let rows; try { rows = csv(t, s); } catch (e) { return alert(e.message); }
+const kMuatExcel = () => window.ExcelJS ? Promise.resolve() : new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = '/exceljs.min.js'; sc.onload = ok; sc.onerror = () => no(new Error('Pustaka Excel gagal dimuat. Periksa koneksi lalu coba lagi, atau pakai file CSV.')); document.head.appendChild(sc); });
+// nilai sel Excel -> teks. Angka panjang (>= 15 digit) sudah dibulatkan Excel, jadi ditandai rusak agar tidak tersimpan salah.
+function kSelTeks(v) {
+  if (v == null) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') return isNaN(v) ? '' : v.toISOString().slice(0, 10);
+  if (typeof v == 'number') return Math.abs(v) >= 1e15 ? v.toExponential(10) : String(v);
+  if (typeof v == 'object') { if (v.richText) return v.richText.map(x => x.text).join('').trim(); if ('result' in v) return kSelTeks(v.result); if (v.text != null) return kSelTeks(v.text); return ''; }
+  return String(v).trim();
+}
+async function ksBacaExcel(f) {
+  await kMuatExcel(); const wb = new ExcelJS.Workbook();
+  try { await wb.xlsx.load(await f.arrayBuffer()); } catch (e) { throw new Error('Berkas Excel tidak bisa dibaca. Pastikan formatnya .xlsx (bukan .xls lama).'); }
+  const ws = wb.worksheets[0]; if (!ws) throw new Error('Berkas Excel tidak memiliki lembar kerja');
+  const rows = [], kol = ws.columnCount;
+  ws.eachRow({ includeEmpty: false }, (row, n) => { const v = []; for (let i = 1; i <= kol; i++) v.push(kSelTeks(row.getCell(i).value)); if (v.some(x => x !== '')) rows.push({ v, n }); });
+  return rows;
+}
+function ksBacaCsv(t) {
+  t = t.replace(/^\uFEFF/, ''); const l1 = t.split(/\r?\n/, 1)[0], s = [';', '\t', ','].map(c => [c, l1.split(c).length]).sort((a, b) => b[1] - a[1])[0][0];
+  return csv(t, s);
+}
+async function ksImpor(el) { const f = el.files[0]; el.value = ''; if (f) await ksBerkas(f); }
+async function ksBerkas(f) {
+  const nm = (f.name || '').toLowerCase(); let rows;
+  try {
+    if (/\.xlsx$/.test(nm)) rows = await ksBacaExcel(f);
+    else if (/\.xls$/.test(nm)) return alert('Format .xls (Excel lama) tidak didukung. Buka di Excel, pilih Simpan Sebagai, lalu pilih format .xlsx atau CSV.');
+    else if (/\.(csv|txt)$/.test(nm)) rows = ksBacaCsv(await f.text());
+    else return alert('Pilih berkas Excel (.xlsx) atau CSV (.csv).');
+  } catch (e) { return alert(e.message); }
   if (rows.length < 2) return alert('Berkas kosong atau hanya berisi baris judul kolom');
   const h = rows[0].v.map(x => x.trim());
-  if (!h.some(x => /^nama( lengkap)?$/i.test(x))) return alert('Baris pertama harus berisi judul kolom, minimal "Nama". Judul yang terbaca: ' + h.join(', '));
+  if (!h.some(x => /^nama( lengkap)?$/i.test(x))) return alert('Baris pertama harus berisi judul kolom, minimal "Nama". Judul yang terbaca: ' + h.filter(Boolean).join(', '));
   if (rows.length - 1 > 10000) return alert('Terlalu banyak baris (' + (rows.length - 1) + '). Maksimal 10.000 baris per berkas.');
   KI = { mode: 'lewati', seq: 0, baris: rows.slice(1).map(({ v, n }) => { const o = { _baris: n }; h.forEach((k, i) => { if (k) o[k] = (v[i] || '').trim(); }); return o; }) };
   if (JSON.stringify(KI.baris).length > 4e6) { KI = null; return alert('Berkas terlalu besar untuk dikirim sekali. Pecah menjadi beberapa berkas.'); }
   $('#ks-if').textContent = f.name + ' • ' + KI.baris.length + ' baris data'; $('[name=ks-m][value=lewati]').checked = true; $('#ks-di').showModal(); await ksPrat();
 }
+const TPL = ['Nama', 'NISN', 'NIS', 'NIK', 'Jenis Kelamin', 'Tempat Lahir', 'Tanggal Lahir', 'Nama Ayah', 'Nama Ibu', 'Alamat', 'No HP', 'Jenjang', 'Kelas', 'Angkatan', 'Asal Sekolah', 'Status'];
+const TPL_CONTOH = ['Contoh Siswa', '0123456789', '2025001', '3215000000000000', 'L', 'Karawang', '17-08-2012', 'Nama Ayah', 'Nama Ibu', 'Dusun I RT 01 RW 01 Desa ...', '081234567890', 'Paket B', '8 A', '2025', 'SMP Negeri 1', 'aktif'];
+async function ksTemplate() {
+  try { await kMuatExcel(); } catch (e) { return alert(e.message); }
+  const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet('Data Siswa'), pt = wb.addWorksheet('Petunjuk');
+  ws.addRow(TPL).font = { bold: true }; ws.addRow(TPL_CONTOH);
+  [2, 3, 4, 7, 11, 14].forEach(i => { ws.getColumn(i).numFmt = '@'; }); // teks: agar angka 0 di depan dan angka panjang tidak rusak
+  ws.columns.forEach((c, i) => { c.width = [26, 14, 12, 20, 14, 16, 14, 20, 20, 36, 16, 11, 9, 10, 22, 10][i]; }); ws.views = [{ state: 'frozen', ySplit: 1 }];
+  ['Petunjuk pengisian', '1. Isi data mulai baris ke-3. Baris ke-2 hanyalah contoh, hapus sebelum diunggah.', '2. Hanya kolom Nama yang wajib. Kolom lain boleh dikosongkan.',
+    '3. NISN, NIS, NIK, Tanggal Lahir, No HP, dan Angkatan sudah berformat teks. Jangan diubah menjadi angka.', '4. Jenis Kelamin: L atau P. Jenjang: Paket A, Paket B, atau Paket C.',
+    '5. Tanggal Lahir: 17-08-2012 atau 2012-08-17. Status: aktif, pindah, lulus, atau nonaktif (kosong = aktif).', '6. Siswa dikenali dari NISN + Jenjang. Saat upload, pilih "Lewati" atau "Perbarui" siswa yang sudah ada.'].forEach(x => pt.addRow([x]));
+  pt.getRow(1).font = { bold: true }; pt.getColumn(1).width = 100;
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([await wb.xlsx.writeBuffer()], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })); a.download = 'template-data-siswa.xlsx'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function ksTemplateCsv() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + TPL.join(';') + '\r\n'], { type: 'text/csv;charset=utf-8' })); a.download = 'template-data-siswa.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 function ksMode(m) { KI.mode = m; ksPrat(); }
 async function ksPrat() {
   const id = ++KI.seq; $('#ks-iok').disabled = true; $('#ks-it').innerHTML = ''; $('#ks-is').textContent = 'Memeriksa...';
@@ -107,7 +153,7 @@ async function ksPrat() {
 async function ksImporSimpan() {
   const r = KI.d.ringkasan; if (!confirm(`Simpan ${r.baru} siswa baru dan perbarui ${r.perbarui} siswa?`)) return;
   const d = await api('siswa', { aksi: 'impor', baris: KI.baris, mode: KI.mode, simpan: true });
-  $('#ks-di').close(); alert(d.disimpan ? 'Impor selesai.' : 'Tidak ada yang disimpan.'); KI = null; ksCari();
+  $('#ks-di').close(); alert(d.disimpan ? 'Upload selesai.' : 'Tidak ada yang disimpan.'); KI = null; tab(5);
 }
 
 // ================= SURAT =================

@@ -58,3 +58,10 @@
 - **Pendaftaran Siswa Baru**: formulir publik di /daftar.html (tanpa login), dibuka/ditutup dari menu Pendaftaran Siswa Baru. Pendaftar diverifikasi, diterima (otomatis menjadi siswa aktif), atau ditolak. Perlindungan: kolom jebakan robot, batas 10 pendaftaran per 15 menit per alamat IP, dan penolakan data kembar.
 - Hak akses baru di Pengguna & Peran: siswa.lihat/ubah/hapus, surat.lihat/buat/hapus, ppdb.lihat/kelola. Peran Operator yang sudah ada tidak otomatis mendapat hak baru; centang sendiri di Pengguna & Peran. Kata sandi operator bawaan (Environment Variable) mendapat siswa.lihat/ubah, surat.lihat/buat, dan ppdb.lihat.
 - Jumlah fungsi server menjadi 10 (batas paket Hobby Vercel: 12).
+
+## Versi 5.1: Upload Data Siswa (Excel dan CSV)
+- Menu baru **Upload Data Siswa**: unggah berkas Excel (.xlsx) atau CSV, lihat pratinjau dan daftar baris yang salah, baru Simpan. Tidak ada data yang masuk sebelum Simpan. Maksimal 10.000 baris per berkas. Format .xls lama tidak didukung (simpan ulang sebagai .xlsx).
+- Tersedia template Excel (kolom teks sudah diatur agar angka 0 di depan NISN tidak hilang) dan template CSV. Berkas hasil menu "Unduh Data Siswa" di aplikasi absensi juga langsung bisa dipakai.
+- Pengenal siswa: NISN + Jenjang. Bila tanpa NISN, dipakai Nama + Tanggal Lahir + Jenjang. Siswa tanpa keduanya tidak bisa dicek ganda dan akan diberi peringatan di pratinjau. Pilihan "Lewati" atau "Perbarui" siswa yang sudah ada muncul di pratinjau.
+- Angka panjang (NIK, NISN) yang sudah dibulatkan Excel (kolom berformat angka) ditolak sebagai "rusak oleh Excel". Ubah kolomnya menjadi format Teks lalu isi ulang.
+- Pembaca Excel (ExcelJS 4.4.0, lisensi MIT) disertakan sebagai public/exceljs.min.js dan hanya dimuat saat berkas Excel dipilih. Tidak ada Environment Variable atau migrasi baru.
